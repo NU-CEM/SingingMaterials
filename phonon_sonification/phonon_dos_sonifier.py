@@ -38,10 +38,10 @@ import warnings
 
 import sys
 sys.path.append('../')
-from phonon_sonification import mp_interface, utilities, phonon_frequency_mapping, mods
+from phonon_sonification import mp_interface, utilities, frequency_mapping, mods
 from phonon_sonification.mp_interface import dos_stats_analysis, scale_by_occupation
 from phonon_sonification.utilities import format_duration_for_strauss
-from phonon_sonification.phonon_frequency_mapping import phonon_to_audible_log, phonon_to_note
+from phonon_sonification.frequency_mapping import phonon_to_audible_loglog, phonon_to_note
 
 # STRAUSS Score requires a chord or note sequence. I don't really understand this.
 STRAUSS_BASE_NOTE = [["G3"]]
@@ -119,7 +119,7 @@ class PhononDOSSonifier:
         is_scalar = isinstance(phonon_freq_hz, (int, float))
         freq_array = np.atleast_1d(phonon_freq_hz)
         
-        result = phonon_to_audible_log(
+        result = phonon_to_audible_loglog(
             freq_array,
             self.fmin_phonon,
             self.fmax_phonon,
@@ -191,14 +191,14 @@ class PhononDOSSonifier:
         return stats
         
     def spectraliser(self,
-                     site_name: str,
+                     site_name: str = "total",
                      temperature: Optional[float] = None,
                      mapping: Optional[Union[str, callable]] = None) -> Sonification:
         """
         Sonify the projected or full density of states using an inverse fast fourier transform.
         
         Args:
-            site_name: Site to sonify (e.g., 'Fe_2', 'O_6')
+            site_name: Site to sonify (e.g., 'Fe_2', 'O_6'); defaults to "total" (full) density of states.
             temperature: Temperature in K (defaults to None for athermal)
             mapping: Mapping to extract spectral features (defaults to None). Pre-defined functions can be specified, 
             or a lambda function can be passed as an argument (not supported by CLI).

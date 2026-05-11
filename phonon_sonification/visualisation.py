@@ -1,5 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
+from phonon_sonification.mp_interface import scale_by_occupation
 
 def animate_dos_vs_temperature(dos_dict, site_order=None, interval=500):
     from matplotlib.animation import FuncAnimation
@@ -124,7 +126,9 @@ def plot_dos_at_temperature(dos_dict, T=None, site_order=None):
     
     T=None → athermal DOS
     """
-
+    plt.rcParams["font.family"] = "serif"
+    plt.rcParams["font.serif"] = ["Times New Roman"]
+    plt.rcParams.update({'font.size': 10})
     projections = dos_dict["projection"]
     mp_id = dos_dict["metadata"]["mp_id"]
 
@@ -134,78 +138,97 @@ def plot_dos_at_temperature(dos_dict, T=None, site_order=None):
     cmap = plt.get_cmap("tab10")
     colours = {site: cmap(i % 10) for i, site in enumerate(site_order)}
 
-    fig, ax = plt.subplots(figsize=(7,4))
-    ax.set_title(
-        f"Phonon DOS {'(athermal)' if T is None else f'at T = {int(T)} K'} — {mp_id}"
-    )
-    ax.set_xlabel("Frequency (Hz)")
-    ax.set_ylabel("DOS")
+    ONE_MM = 1 / 25.4  # Convert mm to inches
+    fig, ax = plt.subplots(figsize=(170 * ONE_MM, 140 * ONE_MM))  # single column
+    #ax.set_title(
+    #    f"Phonon DOS {'(athermal)' if T is None else f'at T = {int(T)} K'} — {mp_id}"
+    #)
+    ax.set_xlabel("Frequency (THz)",fontsize=10)
+    ax.set_ylabel("Density of States",fontsize=10)
 
     ax.set_autoscale_on(False)
 
     lines = {}
 
     for site in site_order:
-        f = projections[site]["frequencies"]
-
-        if T is None:
-            weighted = projections[site]["densities"]
+        if site == "total":
+            pass
         else:
-            weighted = scale_by_occupation(
-                projections[site]["densities"], f, T
+            f = projections[site]["frequencies"]
+    
+            if T is None:
+                weighted = projections[site]["densities"]
+            else:
+                weighted = scale_by_occupation(
+                    projections[site]["densities"], f, T
+                )
+    
+            weighted = weighted / weighted.sum()
+    
+            # Convert to LaTeX-style subscript
+            if site == "total":
+                formatted_label = "Total"
+            else:
+                element, number = site.split("_")
+                formatted_label = f"{element}"
+    
+            ax.plot(
+                f/1E12,
+                weighted,
+                color=colours[site],
+                label=formatted_label
             )
-
-        weighted = weighted / weighted.sum()
-
-        ax.plot(
-            f,
-            weighted,
-            color=colours[site],
-            label=site
-        )
-
-        # Band centre
-        if T is None:
-            centre = projections[site]["stats"]["athermal"]["band_centre"]
-            q25 = projections[site]["stats"]["athermal"]["quantile_25"]
-            q75 = projections[site]["stats"]["athermal"]["quantile_75"]
-        else:
-            centre = projections[site]["stats"]["thermal"][str(T)]["band_centre"]
-            q25 = projections[site]["stats"]["thermal"][str(T)]["quantile_25"]
-            q75 = projections[site]["stats"]["thermal"][str(T)]["quantile_75"]
-
-        ax.axvline(
-            centre,
-            color=colours[site],
-            linestyle="--",
-            linewidth=2,
-            alpha=0.9
-        )
-
-        ax.axvline(
-            q25,
-            color=colours[site],
-            linestyle=":",
-            alpha=0.3
-        )
-        ax.axvline(
-            q75,
-            color=colours[site],
-            linestyle=":",
-            alpha=0.3
-        )
+    
+            # Band centre
+            if T is None:
+                centre = projections[site]["stats"]["athermal"]["band_centre"] / 1E12
+                q25 = projections[site]["stats"]["athermal"]["quantile_25"] / 1E12
+                q75 = projections[site]["stats"]["athermal"]["quantile_75"] / 1E12
+            else:
+                centre = projections[site]["stats"]["thermal"][str(T)]["band_centre"]
+                q25 = projections[site]["stats"]["thermal"][str(T)]["quantile_25"]
+                q75 = projections[site]["stats"]["thermal"][str(T)]["quantile_75"]
+    
+            ax.axvline(
+                centre,
+                color=colours[site],
+                linestyle="--",
+                linewidth=1,
+                alpha=0.6
+            )
+    
+            ax.axvline(
+                q25,
+                color=colours[site],
+                linestyle=":",
+                linewidth=1,
+                alpha=0.6
+            )
+            ax.axvline(
+                q75,
+                color=colours[site],
+                linestyle=":",
+                linewidth=1,
+                alpha=0.6
+            )
 
     # Fixed y-scale
     ymax = max(
         (projections[s]["densities"] / projections[s]["densities"].sum()).max()
         for s in site_order
     )
-    ax.set_ylim(0, ymax * 1.2)
+    ax.set_ylim(0, ymax)
 
     ax.set_xlim(
-        projections[site_order[0]]["frequencies"].min(),
-        projections[site_order[0]]["frequencies"].max()
+        projections[site_order[0]]["frequencies"].min()/1E12,
+        projections[site_order[0]]["frequencies"].max()/1E12
     )
 
-    ax.legend()
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    plt.tight_layout()
+    plt.savefig("BAs.png",dpi=320)
+
     plt.show()
+    
+
+    return plt
