@@ -1,13 +1,15 @@
 ## What is this?
 
-First, bear with me, several parts of this package are (probably) currently broken. Things are changing fast and its not yet ready for public consumption.
-
 - This is a Python-based, [Strauss](https://www.audiouniverse.org/research/strauss)-powered package which sonifies first-principles phonon data. 
 - At the moment the focus is on phonon density of states data, which is read in from the [Materials Project](https://next-gen.materialsproject.org/) database.
 - Currently three sonification types are supported: spectral, synth and choral. These can be mixed together in different ways (superimpose, concatenate or a mixture of the two). Mixing is implemented through `ffmpeg`.
 - Users are encouraged to use `.yml` files rather than the command line interface to create and mix sonifications. The command line interface does not allow mixing.
 - The package is designed to by extendable, so that new types of phonon data, new data interfaces, and new sonifications can all be considered.
-- This package will power a Singing Materials web app which is currently in development.
+- This package will eventually power a Singing Materials web app.
+
+## Important note
+
+This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/NU-CEM/Singing_Materials_Strauss/issues).
 
 ### Package structure:
 
