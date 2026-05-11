@@ -1,7 +1,7 @@
 import subprocess
 
 def make_pair(wav1, wav2, out):
-    # 1️⃣ Create 2 seconds silence
+    # Create 2 seconds silence
     subprocess.run([
         "ffmpeg", "-y",
         "-f", "lavfi",
@@ -10,14 +10,14 @@ def make_pair(wav1, wav2, out):
         "silence.wav"
     ], check=True)
 
-    # 2️⃣ Create concat list file
+    # Create concat list file
     with open("files.txt", "w") as f:
         f.write(f"file '{wav1}'\n")
         f.write("file 'silence.wav'\n")
         f.write(f"file '{wav2}'\n")
         f.write("file 'silence.wav'\n")
 
-    # 3️⃣ Concatenate to combined.wav
+    # Concatenate to combined.wav
     subprocess.run([
         "ffmpeg", "-y",
         "-f", "concat",
@@ -27,7 +27,7 @@ def make_pair(wav1, wav2, out):
         "combined.wav"
     ], check=True)
 
-    # 4️⃣ Loudness normalise + encode
+    # Loudness normalise + encode
     subprocess.run([
         "ffmpeg", "-y",
         "-i", "combined.wav",
