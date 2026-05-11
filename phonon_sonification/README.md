@@ -29,7 +29,7 @@ This is alpha-release software: it has been tested, but there are likely still b
 
 `run_from_yaml.py` : reads in the `sonification_batch.yml` and uses these to create and mix sonifications. 
 
-`sonification_batch.yml` : example yml file which specifies how to create the sonifications and mix them together.
+`spec_example.yml` : example yml file which specifies how to create the sonifications and mix them together.
 
 `utilities.py` : small utility functions.
 
