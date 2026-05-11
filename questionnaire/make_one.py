@@ -1,7 +1,7 @@
 import subprocess
 
 def make_one(wav, out):
-    # 1️⃣ Create 2 seconds silence
+    # Create 2 seconds silence
     subprocess.run([
         "ffmpeg", "-y",
         "-f", "lavfi",
@@ -10,12 +10,12 @@ def make_one(wav, out):
         "silence.wav"
     ], check=True)
 
-    # 2️⃣ Create concat list
+    # Create concat list
     with open("files.txt", "w") as f:
         f.write(f"file '{wav}'\n")
         f.write("file 'silence.wav'\n")
 
-    # 3️⃣ Concatenate
+    # Concatenate
     subprocess.run([
         "ffmpeg", "-y",
         "-f", "concat",
@@ -25,7 +25,7 @@ def make_one(wav, out):
         "combined.wav"
     ], check=True)
 
-    # 4️⃣ Loudness normalise + encode
+    # Loudness normalise + encode
     subprocess.run([
         "ffmpeg", "-y",
         "-i", "combined.wav",
