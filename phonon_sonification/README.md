@@ -21,13 +21,13 @@ This is alpha-release software: it has been tested, but there are likely still b
 
 `phonon_dos_sonifier.py`: takes the density of states data and sonifies it using Strauss. Three sonification strategies are implemented: spectral (using the Strauss spectraliser), synth (using the Strauss synth) and choral (using the strauss sampler and choral samples).
 
-`phonon_frequency_mapping.py` : functions for mapping from phonon frequencies to audible frequencies.
+`frequency_mapping.py` : functions for mapping from phonon frequencies to audible frequencies.
 
 `phonon_mixer.py` : takes the `.wav` files created by `phonon_dos_sonifier.py` and mixes them together with `ffmpeg`.
 
 `phonopy_interface.py` : reads in data from the phonopy output file format.
 
-`run_from_spec.py` : reads in the `sonification_batch.yml` and uses these to create and mix sonifications. 
+`run_from_yaml.py` : reads in the `sonification_batch.yml` and uses these to create and mix sonifications. 
 
 `sonification_batch.yml` : example yml file which specifies how to create the sonifications and mix them together.
 
