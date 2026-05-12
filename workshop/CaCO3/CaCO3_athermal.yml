@@ -2,7 +2,6 @@ mp_id: mp-3953
 
 globals:
   duration: 10.0   
-  temp: 300
 
 jobs:
   - name: one

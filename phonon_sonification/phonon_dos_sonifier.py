@@ -41,7 +41,7 @@ sys.path.append('../')
 from phonon_sonification import mp_interface, utilities, frequency_mapping, mods
 from phonon_sonification.mp_interface import dos_stats_analysis, scale_by_occupation
 from phonon_sonification.utilities import format_duration_for_strauss
-from phonon_sonification.frequency_mapping import phonon_to_audible_loglog, phonon_to_note
+from phonon_sonification.frequency_mapping import phonon_to_audible_log, phonon_to_note
 
 # STRAUSS Score requires a chord or note sequence. I don't really understand this.
 STRAUSS_BASE_NOTE = [["G3"]]
@@ -119,7 +119,7 @@ class PhononDOSSonifier:
         is_scalar = isinstance(phonon_freq_hz, (int, float))
         freq_array = np.atleast_1d(phonon_freq_hz)
         
-        result = phonon_to_audible_loglog(
+        result = phonon_to_audible_log(
             freq_array,
             self.fmin_phonon,
             self.fmax_phonon,
