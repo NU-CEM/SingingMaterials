@@ -1,0 +1,18 @@
+mp_id: mp-6930
+
+globals:
+  duration: 10.0   
+  fmin_phonon: 1E10
+  fmax_phonon: 40E12
+
+jobs:
+  - name: two
+    mode: choral
+    sites: all
+
+mix:
+  output: quartz_mix.wav
+  curve: tri        
+  mode: super 
+  weights:
+    two: 1.0

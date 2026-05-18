@@ -1,0 +1,23 @@
+mp_id: mp-66
+
+globals:
+  duration: 5.0
+  fmin_phonon: 1E10
+  fmax_phonon: 40E12   
+
+jobs:
+  - name: one
+    mode: spectral
+    sites: all
+
+  - name: two
+    mode: choral
+    sites: all
+
+mix:
+  output: diamond_mix.wav
+  curve: tri        
+  mode: super 
+  weights:
+    one: 0.0
+    two: 0.8

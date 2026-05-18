@@ -38,8 +38,8 @@ import warnings
 
 import sys
 sys.path.append('../')
-from phonon_sonification import mp_interface, utilities, frequency_mapping, mods
-from phonon_sonification.mp_interface import dos_stats_analysis, scale_by_occupation
+from phonon_sonification import data_interface, utilities, frequency_mapping, mods
+from phonon_sonification.data_interface import dos_stats_analysis, scale_by_occupation
 from phonon_sonification.utilities import format_duration_for_strauss
 from phonon_sonification.frequency_mapping import phonon_to_audible_log, phonon_to_note
 
@@ -55,7 +55,8 @@ class PhononDOSSonifier:
     """
     
     def __init__(self, 
-                 mp_id: str,
+                 mp_id: str = None,
+                 phonopy_filename: str = None,
                  temperatures: Optional[List[float]] = None,
                  duration: float = 10.0,
                  fmin_audible: float = 196.0,
@@ -79,13 +80,14 @@ class PhononDOSSonifier:
         then fmin_phonon and fmax_phonon must be specified.
         """
         self.mp_id = mp_id
+        self.phonopy_filename = phonopy_filename
         self.duration = duration
         self.fmin_audible = fmin_audible
         self.fmax_audible = fmax_audible
         
         # Get DOS data
-        print(f"Finding phonon DOS data for {mp_id}...")
-        self.dos_dict = dos_stats_analysis(mp_id, temp=temperatures)
+        print(f"Finding phonon DOS data for {self.mp_id or self.phonopy_filename}...")
+        self.dos_dict = dos_stats_analysis(mp_id=self.mp_id, phonopy_filename=self.phonopy_filename, temp=temperatures)
         
         # Extract frequency range across all sites
         all_fmin = []
@@ -131,7 +133,7 @@ class PhononDOSSonifier:
     
     def print_available_sites(self, temperature: Optional[float] = None):
         """Print information about available sites at an optionally specified temperature"""
-        print(f"\nAvailable sites in {self.mp_id}:")
+        print(f"\nAvailable sites for {self.mp_id or self.phonopy_filename}:")
         print("="*80)
         
         for site in self.dos_dict['projection'].keys():
@@ -476,7 +478,7 @@ class PhononDOSSonifier:
             output_path: Where to save
         """
         print(f"\n{'='*60}")
-        print(f"Single site sonification: {self.mp_id}")
+        print(f"Single site sonification: {self.mp_id or self.phonopy_filename}")
         print(f"Site: {site_name}")
         print(f"Duration: {self.duration}s")
         print(f"Temp: {temperature or 'athermal'}")
@@ -513,7 +515,7 @@ class PhononDOSSonifier:
             temp_str = f"{int(temperature)}K" if temperature else "athermal"
             lfo_str = lfo_target if use_lfo else None
             mapping_str = mapping if mapping else None
-            output = f"phonon_{self.mp_id}_{temperature or 'athermal'}_{mode}_{lfo_str or mapping_str or ''}_{site_name}.wav"
+            output = f"phonon_{self.mp_id or self.phonopy_filename}_{temperature or 'athermal'}_{mode}_{lfo_str or mapping_str or ''}_{site_name}.wav"
         soni.save(output_path)
         print(f"{'='*60}\n")
 
@@ -536,7 +538,7 @@ class PhononDOSSonifier:
             output_path: Where to save
         """
         print(f"\n{'='*60}")
-        print(f"Multi-site sonification: {self.mp_id}")
+        print(f"Multi-site sonification: {self.mp_id or self.phonopy_filename}")
         print(f"Duration: {self.duration}s")
         print(f"Sites: {len(site_configs)}")
         print(f"Temp: {temperature or 'athermal'}")
@@ -576,7 +578,7 @@ class PhononDOSSonifier:
             site_name_str = " ".join(site_name_list)
             lfo_str = lfo_target if use_lfo else None
             mapping_str = mapping if use_lfo else None
-            output_path = f"phonon_{self.mp_id}_{temp_str}_{mode}_{lfo_str or mapping_str or ''}_{site_name_str}.wav"
+            output_path = f"phonon_{self.mp_id or self.phonopy_filename}_{temp_str}_{mode}_{lfo_str or mapping_str or ''}_{site_name_str}.wav"
         
         joint_soni.save(output_path)
         print(f"{'='*60}\n")

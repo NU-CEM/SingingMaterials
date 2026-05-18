@@ -14,7 +14,8 @@ KEY_MAP = {    # TO FIX: THIS IS USED FOR NAMING FILES BUT IS INCONSISTENT WITH 
   "lfo": "lfo",
   "lfo_target": "lfo_tar",
   "duration": "dur",
-  "mp_id" : "mp"  
+  "mp_id" : "mp",
+  "phonopy_filename" : "pf"
 }
 
 def run_spec(path: str):
@@ -34,9 +35,12 @@ def run_spec(path: str):
     duration = globals_cfg.get("duration", 10.0)
     fmin_phonon = globals_cfg.get("fmin_phonon", None)
     fmax_phonon = globals_cfg.get("fmax_phonon", None)
+    mp_id = globals_cfg.get("mp_id", None)
+    phonopy_filename = globals_cfg.get("phonopy_filename", None)
 
     sonifier = PhononDOSSonifier(
-                mp_id=spec["mp_id"],
+                mp_id=mp_id,
+                phonopy_filename = phonopy_filename,
                 duration=duration,
                 temperatures=[temp] if temp is not None else None,
                 fmin_phonon = fmin_phonon,

@@ -1,0 +1,29 @@
+mp_id: mp-66
+
+globals:
+  duration: 10.0   
+
+jobs:
+  - name: one
+    mode: spectral
+    sites: all
+
+  - name: two
+    mode: choral
+    sites: all
+
+  - name: three
+    mode: choral
+    sites: all
+
+  - name: four
+    mode: spectral
+    sites: all
+
+mix:
+  output: diamond_mix.wav
+  fade: 2.0          
+  curve: tri        
+  mode: concat  
+  order: ["one", "two", "three","four"]
+

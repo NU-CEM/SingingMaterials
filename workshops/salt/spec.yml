@@ -1,0 +1,37 @@
+mp_id: mp-3953
+
+globals:
+  duration: 10.0   
+
+jobs:
+  - name: one
+    mode: spectral
+    sites: all
+
+  - name: two
+    mode: choral
+    sites: Ca_1
+
+  - name: three
+    mode: choral
+    sites: O_1
+
+  - name: four
+    mode: spectral
+    sites: Ca_1
+
+  - name: five
+    mode: spectral
+    sites: O_1
+
+  - name: six
+    mode: choral
+    sites: all
+
+mix:
+  output: CaO_mix.wav
+  fade: 9.0          
+  curve: tri        
+  mode: concat  
+  order: ["one", "six", "two","three","six", "five", "three", "five"]
+

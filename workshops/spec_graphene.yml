@@ -1,0 +1,18 @@
+
+globals:
+  duration: 10.0   
+  fmin_phonon: 1E10
+  fmax_phonon: 40E12
+  phonopy_filename: phonopy_graphene.yaml
+
+jobs:
+  - name: two
+    mode: choral
+    sites: all
+
+mix:
+  output: graphene_mix.wav
+  curve: tri        
+  mode: super 
+  weights:
+    two: 1.0
