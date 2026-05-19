@@ -87,7 +87,7 @@ def phonon_to_note(
     fmax_phonon,    
     fmin_audio,
     fmax_audio,
-     mapping="linear_compression"
+    mapping="linear_compression"
 ):
 
     if mapping=="loglog":
