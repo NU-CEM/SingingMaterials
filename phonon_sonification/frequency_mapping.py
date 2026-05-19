@@ -7,8 +7,8 @@ def phonon_to_audible_linear_compression(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
-    fmin_audio=200.0,
-    fmax_audio=1500.0
+    fmin_audio,
+    fmax_audio
 ):
     """
     Linearly compress phonon frequency to audible frequency.
@@ -25,8 +25,8 @@ def phonon_to_audible_log(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
-    fmin_audio=200.0,
-    fmax_audio=1500.0
+    fmin_audio,
+    fmax_audio
 ):
     """
     Logarithmically map phonon frequency to audible frequency.
@@ -43,8 +43,8 @@ def phonon_to_audible_loglog(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
-    fmin_audio=200.0,
-    fmax_audio=1600.0
+    fmin_audio,
+    fmax_audio
 ):
     """
     Map phonon frequency -> audible frequency
@@ -84,8 +84,10 @@ def note_to_frequency(note, octave):
 def phonon_to_note(
     f_phonon,
     fmin_phonon,
-    fmax_phonon,
-    mapping="linear_compression"
+    fmax_phonon,    
+    fmin_audio,
+    fmax_audio,
+     mapping="linear_compression"
 ):
 
     if mapping=="loglog":
@@ -93,18 +95,24 @@ def phonon_to_note(
             f_phonon,
             fmin_phonon,
             fmax_phonon
+            fmin_audio,
+            fmax_audio
         )
     elif mapping=="log"::
         f_audio = phonon_to_audible_log(
             f_phonon,
             fmin_phonon,
             fmax_phonon
+            fmin_audio,
+            fmax_audio
         )
     elif mapping=="linear_compression"::
         f_audio = phonon_to_audible_linear_compression(
             f_phonon,
             fmin_phonon,
             fmax_phonon
+            fmin_audio,
+            fmax_audio
         )
 
     note, octave = frequency_to_note(f_audio)
