@@ -3,6 +3,9 @@ import math
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F",
               "F#", "G", "G#", "A", "A#", "B"]
 
+# Note that the phonon_dos_sonifier maps pitches using the linear compression mapping provided by strauss (f_phonon -> f_audio_min + (f_phonon - f_phonon_min) / (f_phonon_max - f_phonon_min) . (f_audio_max - f_audio_min)). 
+# These functions are used when lapping the lfo parameters.
+
 def phonon_to_audible_log(
     f_phonon,
     fmin_phonon,
