@@ -3,9 +3,24 @@ import math
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F",
               "F#", "G", "G#", "A", "A#", "B"]
 
-# Note that the phonon_dos_sonifier maps pitches using the linear compression mapping provided by strauss (f_phonon -> f_audio_min + (f_phonon - f_phonon_min) / (f_phonon_max - f_phonon_min) . (f_audio_max - f_audio_min)). 
-# These functions are used when lapping the lfo parameters.
+def phonon_to_audible_linear_compression(
+    f_phonon,
+    fmin_phonon,
+    fmax_phonon,
+    fmin_audio=200.0,
+    fmax_audio=1500.0
+):
+    """
+    Linearly compress phonon frequency to audible frequency.
+    
+    Frequencies can be in any units (e.g. THz), as long as they are consistent.
+    """
+    if f_phonon <= 0:
+        raise ValueError("Phonon frequency must be positive")
 
+    x = (f_phonon - fmin_phonon) / (fmax_phonon - fmin_phonon)
+    return fmin_audio + x*(fmax_audio - fmin_audio)
+  
 def phonon_to_audible_log(
     f_phonon,
     fmin_phonon,
@@ -43,7 +58,7 @@ def phonon_to_audible_loglog(
         raise ValueError("Phonon frequencies must be positive")
 
     # normalised position in log-frequency space
-    x = math.log(f_phonon / fmin_phonon) / math.log(fmax_phonon - fmin_phonon)
+    x = math.log(f_phonon / fmin_phonon) / math.log(fmax_phonon / fmin_phonon)
 
     # logarithmic interpolation in audio space
     return fmin_audio * (fmax_audio / fmin_audio) ** x
@@ -70,17 +85,23 @@ def phonon_to_note(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
-    loglog=False
+    mapping="linear_compression"
 ):
 
-    if loglog is True:
+    if mapping=="loglog":
         f_audio = phonon_to_audible_loglog(
             f_phonon,
             fmin_phonon,
             fmax_phonon
         )
-    else:
+    elif mapping=="log"::
         f_audio = phonon_to_audible_log(
+            f_phonon,
+            fmin_phonon,
+            fmax_phonon
+        )
+    elif mapping=="linear_compression"::
+        f_audio = phonon_to_audible_linear_compression(
             f_phonon,
             fmin_phonon,
             fmax_phonon
@@ -91,7 +112,7 @@ def phonon_to_note(
 
     return {
         "phonon_frequency": f_phonon,
-        "loglog mapping": loglog,
+        "mapping type": mapping,
         "audible_frequency": f_audio,
         "note": note,
         "octave": octave,
