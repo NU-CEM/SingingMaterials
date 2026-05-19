@@ -151,11 +151,11 @@ class PhononDOSSonifier:
                 label = "athermal"
             
             band_centre_hz = stats['band_centre']
-            band_centre_note_info = phonon_to_note(band_centre_hz, self.fmin_phonon, self.fmax_phonon)
+            band_centre_note_info = phonon_to_note(band_centre_hz, self.fmin_phonon, self.fmax_phonon, self.fmin_audible, self.fmax_audible)
             q25_hz = stats['quantile_25']
-            q25_note_info = phonon_to_note(q25_hz, self.fmin_phonon, self.fmax_phonon)
+            q25_note_info = phonon_to_note(q25_hz, self.fmin_phonon, self.fmax_phonon, self.fmin_audible, self.fmax_audible)
             q75_hz = stats['quantile_75']
-            q75_note_info = phonon_to_note(q75_hz, self.fmin_phonon, self.fmax_phonon)
+            q75_note_info = phonon_to_note(q75_hz, self.fmin_phonon, self.fmax_phonon, self.fmin_audible, self.fmax_audible)
             
             print(f"\n{site:>15} ({label})")
             print(f"  Band centre:  {band_centre_hz:.2e} Hz → {band_centre_note_info['audible_frequency']:.1f} Hz ({band_centre_note_info['note-octave']})")        
