@@ -1,7 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from phonon_sonification.data_interface import scale_by_occupation
+from phonon_sonification.dos_stats import scale_by_occupation
 
 def animate_dos_vs_temperature(dos_dict, site_order=None, interval=500):
     from matplotlib.animation import FuncAnimation

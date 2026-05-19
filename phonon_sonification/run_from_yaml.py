@@ -47,6 +47,8 @@ def run_spec(path: str):
                 fmax_phonon = fmax_phonon
                 )
 
+    sonifier.print_available_sites(temperature=[temp] if temp is not None else None)
+
     for sweep in sweep_cases:
         for job in jobs:
             cfg = merge(globals_cfg, sweep, job, spec)

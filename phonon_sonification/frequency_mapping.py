@@ -3,7 +3,7 @@ import math
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F",
               "F#", "G", "G#", "A", "A#", "B"]
 
-def phonon_to_audible_linear_compression(
+def phonon_to_audible_linearscaling(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
@@ -87,30 +87,30 @@ def phonon_to_note(
     fmax_phonon,    
     fmin_audio,
     fmax_audio,
-    mapping="linear_compression"
+    mapping="linearscaling"
 ):
 
     if mapping=="loglog":
         f_audio = phonon_to_audible_loglog(
             f_phonon,
             fmin_phonon,
-            fmax_phonon
+            fmax_phonon,
             fmin_audio,
             fmax_audio
         )
-    elif mapping=="log"::
+    elif mapping=="log":
         f_audio = phonon_to_audible_log(
             f_phonon,
             fmin_phonon,
-            fmax_phonon
+            fmax_phonon,
             fmin_audio,
             fmax_audio
         )
-    elif mapping=="linear_compression"::
-        f_audio = phonon_to_audible_linear_compression(
+    elif mapping=="linearscaling":
+        f_audio = phonon_to_audible_linearscaling(
             f_phonon,
             fmin_phonon,
-            fmax_phonon
+            fmax_phonon,
             fmin_audio,
             fmax_audio
         )

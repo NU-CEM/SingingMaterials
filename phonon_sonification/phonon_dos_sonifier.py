@@ -38,13 +38,13 @@ import warnings
 
 import sys
 sys.path.append('../')
-from phonon_sonification import data_interface, utilities, frequency_mapping, mods
-from phonon_sonification.data_interface import dos_stats_analysis, scale_by_occupation
+from phonon_sonification import dos_stats, utilities, frequency_mapping, mods
+from phonon_sonification.dos_stats import dos_stats_analysis, scale_by_occupation
 from phonon_sonification.utilities import format_duration_for_strauss
 from phonon_sonification.frequency_mapping import phonon_to_audible_linearscaling, phonon_to_note
 
-# STRAUSS Score requires a chord or note sequence. I don't really understand this.
-STRAUSS_BASE_NOTE = [["G3"]]
+# STRAUSS Score requires a chord or note sequence. 
+STRAUSS_BASE_NOTE = [["G2"]]
 
 # specify audio system.
 AUDIO_SYSTEM = "stereo"
@@ -59,8 +59,8 @@ class PhononDOSSonifier:
                  phonopy_filename: str = None,
                  temperatures: Optional[List[float]] = None,
                  duration: float = 10.0,
-                 fmin_audible: float = 196.0,
-                 fmax_audible: float = 1500.0,
+                 fmin_audible: float = 98.0,
+                 fmax_audible: float = 587.33,
                  fmin_phonon: Optional[float] = None,
                  fmax_phonon: Optional[float] = None):
         """Initialize the phonon DOS sonifier.
@@ -115,6 +115,9 @@ class PhononDOSSonifier:
 
         if min(all_fmin) < self.fmin_phonon or max(all_fmax) > self.fmax_phonon:
             print("warning: all frequencies outside of the user specified range will be ignored.")
+
+        print(f"Audible frequency minimum  (user specified): {self.fmin_audible:.2e} Hz")
+        print(f"Audible frequency maximum  (user specified): {self.fmax_audible:.2e} Hz")
         
     def map_phonon_to_audible_linearscaling(self, phonon_freq_hz: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         """Map phonon frequency (Hz) to audible frequency (Hz)"""
@@ -312,8 +315,14 @@ class PhononDOSSonifier:
                             'D':0.0,    # ✏️ Time to fall from maximum volume to sustained level (s), irrelevant while S is 1 
                             'S':1.,      # ✏️ fraction of maximum volume to sustain note at while held, 1 implies 100% 
                             'R':.2}}) # ✏️ Time to fade out once note is released, using 100 ms
-        
-        notes = [["G2","A2","A#2","B2","C3","C#3","D3","D#3","E3","F3","F#3","G3","G#3","A3","A3","B3","C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4","A4","A#4","B4","C5"]]
+
+        # this needs to be updated if the fmin_audio and fmax_audio are updated and consistency with synth and spectraliser is required.
+        notes = [[
+        "G2","G#2","A2","A#2","B2",
+        "C3","C#3","D3","D#3","E3","F3","F#3","G3","G#3","A3","A#3","B3",
+        "C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4","A4","A#4","B4",
+        "C5","C#5","D5"
+        ]]
         
         # Create Score
         score =  Score(notes,self.duration,pitch_binning="uniform")
@@ -439,7 +448,7 @@ class PhononDOSSonifier:
         }
 
         plims={
-            'pitch_shift': [0,36],
+            'pitch_shift': [0,31],
             'volume': [0,1]
         }
         
