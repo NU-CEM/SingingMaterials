@@ -67,7 +67,7 @@ def phonon_to_note(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
-    loglog=True
+    loglog=False
 ):
 
     if loglog is True:
@@ -88,6 +88,7 @@ def phonon_to_note(
 
     return {
         "phonon_frequency": f_phonon,
+        "loglog mapping": loglog,
         "audible_frequency": f_audio,
         "note": note,
         "octave": octave,
