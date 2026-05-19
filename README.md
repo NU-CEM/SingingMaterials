@@ -5,7 +5,7 @@ We use sonification to listen to the vibrations of materials at an atomic scale;
 
 There are two key parts to this repository. The first is the `phonon_sonification` Python package which is contained in the `phonon_sonification` folder. There are more details about this package in the folder's [README.md](https://github.com/NU-CEM/Singing_Materials_Strauss/tree/main/phonon_sonification). The second are the code and sound examples doted in the `notebooks` folder; these demonstrate what the `phonon_sonification` and Strauss packages can do when applied to materials modelling data.
 
-This work has been published in the following pre-print (and will be later published as part of ICAD proceedings). A `.bib` file is in the repo, and the plain-text citation is: Whalley, L., Shepherd, R., Boehringer, J., Knotts, S., Vickers, P., Caselton, G., Harrison, C., Hogg, B., Ratliff, D., Davenport, C., & Portas, A. (2026). *Singing Materials: Initial experiments in applying sonification to phonon spectra.* arXiv:2603.29037 [cond-mat.mtrl-sci]
+This work has been published in the following pre-print (and will be later published as part of [ICAD proceedings](https://interactive-sonification.org/icad2026/)). A `.bib` file is in the repo, and the plain-text citation is: Whalley, L., Shepherd, R., Boehringer, J., Knotts, S., Vickers, P., Caselton, G., Harrison, C., Hogg, B., Ratliff, D., Davenport, C., & Portas, A. (2026). *Singing Materials: Initial experiments in applying sonification to phonon spectra.* arXiv:2603.29037 [cond-mat.mtrl-sci]
 
 ## What is Sonification?
 
