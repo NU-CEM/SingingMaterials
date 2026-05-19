@@ -1,38 +1,26 @@
-mp_id: mp-3953
-
 globals:
   duration: 10.0   
-  temp: 300
+  mp_id: mp-66
+  fmin_phonon: 1e10
+  fmax_phonon: 4e13
+  overwrite: True
 
 jobs:
   - name: one
-    mode: spectral
-    sites: all
+    mode: synth
+    sites: C_1
 
   - name: two
     mode: choral
-    sites: Ca_1
-
-  - name: three
-    mode: choral
-    sites: O_1
-
-  - name: four
-    mode: spectral
-    sites: Ca_1
-
-  - name: five
-    mode: spectral
-    sites: O_1
-
-  - name: six
-    mode: choral
-    sites: all
+    sites: C_1
 
 mix:
-  output: CaO_mix.wav
+  output: diamond_test_mix.wav
   fade: 9.0          
   curve: tri        
-  mode: concat  
-  order: ["one", "six", "two","three","six", "five", "three", "five"]
+  mode: super  
+  # order: ["one", "six", "two","three","six", "five", "three", "five"]
+  weight:
+    one: 0.3
+    two: 0.7
 
