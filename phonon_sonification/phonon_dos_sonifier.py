@@ -41,7 +41,7 @@ sys.path.append('../')
 from phonon_sonification import data_interface, utilities, frequency_mapping, mods
 from phonon_sonification.data_interface import dos_stats_analysis, scale_by_occupation
 from phonon_sonification.utilities import format_duration_for_strauss
-from phonon_sonification.frequency_mapping import phonon_to_audible_log, phonon_to_note
+from phonon_sonification.frequency_mapping import phonon_to_audible_linearscaling, phonon_to_note
 
 # STRAUSS Score requires a chord or note sequence. I don't really understand this.
 STRAUSS_BASE_NOTE = [["G3"]]
@@ -116,12 +116,12 @@ class PhononDOSSonifier:
         if min(all_fmin) < self.fmin_phonon or max(all_fmax) > self.fmax_phonon:
             print("warning: all frequencies outside of the user specified range will be ignored.")
         
-    def map_phonon_to_audible(self, phonon_freq_hz: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def map_phonon_to_audible_linearscaling(self, phonon_freq_hz: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         """Map phonon frequency (Hz) to audible frequency (Hz)"""
         is_scalar = isinstance(phonon_freq_hz, (int, float))
         freq_array = np.atleast_1d(phonon_freq_hz)
         
-        result = phonon_to_audible_log(
+        result = phonon_to_audible_linearscaling(
             freq_array,
             self.fmin_phonon,
             self.fmax_phonon,
@@ -385,9 +385,9 @@ class PhononDOSSonifier:
         
         # Add LFO if requested
         if use_lfo:
-            q25_audio = self.map_phonon_to_audible(q25_hz)
-            q75_audio = self.map_phonon_to_audible(q75_hz)
-            iqr_audio = self.map_phonon_to_audible(iqr_hz)
+            q25_audio = self.map_phonon_to_audible_linearscaling(q25_hz)
+            q75_audio = self.map_phonon_to_audible_linearscaling(q75_hz)
+            iqr_audio = self.map_phonon_to_audible_linearscaling(iqr_hz)
             
             # LFO rate from IQR (1-5 Hz)
             lfo_freq = 1.0 + 4.0 * (iqr_audio - self.fmin_audible) / (self.fmax_audible - self.fmin_audible)
