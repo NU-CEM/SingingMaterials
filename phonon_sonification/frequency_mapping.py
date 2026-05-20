@@ -39,7 +39,7 @@ def phonon_to_audible_log(
     x = (f_phonon - fmin_phonon) / (fmax_phonon - fmin_phonon)
     return fmin_audio * (fmax_audio / fmin_audio) ** x
 
-def phonon_to_audible_loglog(
+def phonon_to_audible_loglinear(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
@@ -47,10 +47,10 @@ def phonon_to_audible_loglog(
     fmax_audio
 ):
     """
-    Map phonon frequency -> audible frequency
-    preserving octave relationships.
-
-    Doubling phonon frequency -> doubling audible frequency.
+    Log-linear map from phonon to audio frequency.
+    Preserves relative log-position within the range, so fmin_phonon -> fmin_audio
+    and fmax_phonon -> fmax_audio. Octaves are stretched or compressed by the ratio
+    log(fmax_audio/fmin_audio) / log(fmax_phonon/fmin_phonon).
     Frequencies can be in any units (e.g. THz), as long as they are consistent.
     """
 
