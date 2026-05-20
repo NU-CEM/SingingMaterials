@@ -1,9 +1,10 @@
 import math
 
+# standard practice is to use sharps only.
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F",
               "F#", "G", "G#", "A", "A#", "B"]
 
-def phonon_to_audible_linearscaling(
+def phonon_to_audible_linlin(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
@@ -11,8 +12,13 @@ def phonon_to_audible_linearscaling(
     fmax_audio
 ):
     """
-    Linearly compress phonon frequency to audible frequency.
-    
+    Linear mapping from phonon_frequency to audio_frequency.
+    Preserves relative linear position within the phonon range, so fmin_phonon -> fmin_audio
+    and fmax_phonon -> fmax_audio.
+    Equal increments in phonon frequency map to equal increments in audio frequency.
+    The (significant) trade-off for the mapping simplicity is that perceived pitch intervals are distorted: features at the
+    top of the audio range sound compressed and features at the bottom sound stretched,
+    since human pitch perception is approximately logarithmic in frequency.
     Frequencies can be in any units (e.g. THz), as long as they are consistent.
     """
     if f_phonon <= 0:
@@ -21,7 +27,7 @@ def phonon_to_audible_linearscaling(
     x = (f_phonon - fmin_phonon) / (fmax_phonon - fmin_phonon)
     return fmin_audio + x*(fmax_audio - fmin_audio)
   
-def phonon_to_audible_log(
+def phonon_to_audible_linlog(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
@@ -29,8 +35,14 @@ def phonon_to_audible_log(
     fmax_audio
 ):
     """
-    Logarithmically map phonon frequency to audible frequency.
-    
+    Linear mapping from phonon_frequency to log(audio_frequency).
+    Preserves relative linear position within the phonon range, so fmin_phonon -> fmin_audio
+    and fmax_phonon -> fmax_audio.
+    Equal increments in phonon frequency map to equal pitch
+    intervals (equal ratios in audible frequency), regardless of where they sit
+    in the spectrum. 
+    Low-frequency features are spread out and high-frequency
+    features are compressed in pitch, relative to a log-log mapping.
     Frequencies can be in any units (e.g. THz), as long as they are consistent.
     """
     if f_phonon <= 0:
@@ -39,7 +51,7 @@ def phonon_to_audible_log(
     x = (f_phonon - fmin_phonon) / (fmax_phonon - fmin_phonon)
     return fmin_audio * (fmax_audio / fmin_audio) ** x
 
-def phonon_to_audible_loglinear(
+def phonon_to_audible_loglog(
     f_phonon,
     fmin_phonon,
     fmax_phonon,
@@ -47,9 +59,11 @@ def phonon_to_audible_loglinear(
     fmax_audio
 ):
     """
-    Log-linear map from phonon to audio frequency.
-    Preserves relative log-position within the range, so fmin_phonon -> fmin_audio
-    and fmax_phonon -> fmax_audio. Octaves are stretched or compressed by the ratio
+    Linear mapping from log(phonon_frequency) to log(audio_frequency).
+    Preserves relative log position within the phonon range, so fmin_phonon -> fmin_audio
+    and fmax_phonon -> fmax_audio. 
+    Equal ratios in phonon frequency map to equal pitch intervals, so the relative spacing of spectral features is preserved.
+    Octaves are stretched or compressed by the ratio
     log(fmax_audio/fmin_audio) / log(fmax_phonon/fmin_phonon).
     Frequencies can be in any units (e.g. THz), as long as they are consistent.
     """
@@ -99,7 +113,7 @@ def phonon_to_note(
             fmax_audio
         )
     elif mapping=="log":
-        f_audio = phonon_to_audible_log(
+        f_audio = phonon_to_audible_linlog(
             f_phonon,
             fmin_phonon,
             fmax_phonon,
@@ -107,7 +121,7 @@ def phonon_to_note(
             fmax_audio
         )
     elif mapping=="linearscaling":
-        f_audio = phonon_to_audible_linearscaling(
+        f_audio = phonon_to_audible_linlin(
             f_phonon,
             fmin_phonon,
             fmax_phonon,
