@@ -41,7 +41,7 @@ sys.path.append('../')
 from phonon_sonification import dos_stats, utilities, frequency_mapping, mods
 from phonon_sonification.dos_stats import dos_stats_analysis, scale_by_occupation
 from phonon_sonification.utilities import format_duration_for_strauss
-from phonon_sonification.frequency_mapping import phonon_to_audible_linearscaling, phonon_to_note
+from phonon_sonification.frequency_mapping import phonon_to_audible_linlin, phonon_to_note
 
 # STRAUSS Score requires a chord or note sequence. 
 STRAUSS_BASE_NOTE = [["G2"]]
@@ -119,12 +119,12 @@ class PhononDOSSonifier:
         print(f"Audible frequency minimum  (user specified): {self.fmin_audible:.2e} Hz")
         print(f"Audible frequency maximum  (user specified): {self.fmax_audible:.2e} Hz")
         
-    def map_phonon_to_audible_linearscaling(self, phonon_freq_hz: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+    def map_phonon_to_audible_linlin(self, phonon_freq_hz: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
         """Map phonon frequency (Hz) to audible frequency (Hz)"""
         is_scalar = isinstance(phonon_freq_hz, (int, float))
         freq_array = np.atleast_1d(phonon_freq_hz)
         
-        result = phonon_to_audible_linearscaling(
+        result = phonon_to_audible_linlin(
             freq_array,
             self.fmin_phonon,
             self.fmax_phonon,
@@ -394,9 +394,9 @@ class PhononDOSSonifier:
         
         # Add LFO if requested
         if use_lfo:
-            q25_audio = self.map_phonon_to_audible_linearscaling(q25_hz)
-            q75_audio = self.map_phonon_to_audible_linearscaling(q75_hz)
-            iqr_audio = self.map_phonon_to_audible_linearscaling(iqr_hz)
+            q25_audio = self.map_phonon_to_audible_linlin(q25_hz)   # TODO; support switching to the other implemented mappings
+            q75_audio = self.map_phonon_to_audible_linlin(q75_hz)
+            iqr_audio = self.map_phonon_to_audible_linlin(iqr_hz)
             
             # LFO rate from IQR (1-5 Hz)
             lfo_freq = 1.0 + 4.0 * (iqr_audio - self.fmin_audible) / (self.fmax_audible - self.fmin_audible)
