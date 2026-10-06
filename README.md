@@ -77,3 +77,16 @@ If you want to edit or run the notebooks locally you will need to:
 - register for a Materials Project account and generate an API key. More details are [here](https://next-gen.materialsproject.org/api).
 - store the Materials Project API Key in a `.env` file with the MP_API_KEY variable.
 
+
+## Use of AI
+
+From October 2026, AI was used to make changes to this repository. Commit `b11c2ef` ("Create LICENSE.md", 15 September 2026) is the last commit made before then. Every commit after it, starting with `6d034a0` ("Fix crashes and incorrect results in phonon_sonification"), was written using [Claude Code](https://claude.com/claude-code), an AI coding assistant, running Anthropic's Claude Opus 5.5 model. These commits carry a `Co-Authored-By: Claude` line in their commit message, so they can be listed with `git log --grep="Co-Authored-By: Claude"`.
+
+The repository maintainer asked for a review of the repository, chose which suggested changes to make, and directed the work. The AI assistant wrote the code, tests and text in these commits, including this statement. The changes were:
+
+- fixing bugs in the `phonon_sonification` package, including a bug that misaligned phonon densities and frequencies when imaginary modes were removed, and an incorrect sign in the Shannon entropy;
+- packaging (`pyproject.toml`, command-line entry points), a `pytest` test suite and a GitHub Actions workflow;
+- removing unused code, caching Materials Project data as JSON rather than pickle, tidying the READMEs and adding `CITATION.cff`;
+- organising the `workshops` folder and correcting material IDs in the quartz, salt and graphite specs.
+
+The test suite passes in CI on Python 3.11 to 3.13. Some changes have not been checked against real data: choral sonification is untested because its samples are not in the repository, the graphite site labels (`C_1`, `C_2`) are unverified, and cached DOS files made before the misalignment fix still need regenerating. Commit hashes above refer to the `fix/phonon-sonification-bugs` branch and may change if that branch is rebased or squashed when merged.
