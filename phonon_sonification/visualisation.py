@@ -1,4 +1,3 @@
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from phonon_sonification.dos_stats import scale_by_occupation

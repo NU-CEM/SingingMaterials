@@ -1,7 +1,5 @@
 import subprocess
 import random
-import tempfile
-from pathlib import Path
 
 def start_mixing(outputs,job_order,spec):
 

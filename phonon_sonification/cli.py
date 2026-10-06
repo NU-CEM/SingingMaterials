@@ -137,10 +137,10 @@ def main():
             else:
                 print("\nError: Specify --info, --all-sites, --site, or --sites")
                 print("\nQuick examples:")
-                print(f"  phonon-sonify mp-3953 --info --temp 300")
-                print(f"  phonon-sonify mp-3953 --temp 50 --all-sites")
-                print(f"  phonon-sonify mp-3953 --site O_6 --lfo")
-                print(f"  phonon-sonify mp-3953 --temp 300 --sites O_6 Ca_1")
+                print("  phonon-sonify mp-3953 --info --temp 300")
+                print("  phonon-sonify mp-3953 --temp 50 --all-sites")
+                print("  phonon-sonify mp-3953 --site O_6 --lfo")
+                print("  phonon-sonify mp-3953 --temp 300 --sites O_6 Ca_1")
         
         else:
             print("\nError: Provide mp_id or use --examples")

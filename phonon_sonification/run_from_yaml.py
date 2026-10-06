@@ -1,7 +1,6 @@
 import yaml
 import itertools
 import re
-from copy import deepcopy
 from pathlib import Path
 from phonon_sonification.phonon_dos_sonifier import PhononDOSSonifier
 from phonon_sonification.phonon_mixer import start_mixing

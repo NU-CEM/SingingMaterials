@@ -29,10 +29,9 @@ from strauss.sources import Events, Objects
 from strauss.score import Score
 from strauss.generator import Synthesizer, Sampler, Spectralizer
 
-from typing import Dict, List, Tuple, Optional, Union
-import warnings
+from typing import Dict, List, Optional, Union
 
-from phonon_sonification.dos_stats import dos_stats_analysis, scale_by_occupation
+from phonon_sonification.dos_stats import dos_stats_analysis
 from phonon_sonification.frequency_mapping import phonon_to_audible_linlin, phonon_to_note
 
 # STRAUSS Score requires a chord or note sequence. 
@@ -174,8 +173,6 @@ class PhononDOSSonifier:
             raise ValueError(f"Site '{site_name}' not found. Available: {available}")
         
         site_data = self.dos_dict['projection'][site_name]
-        frequencies_hz = site_data['frequencies']
-        densities = site_data['densities']
         
         # Get stats
         if temperature is not None:
@@ -289,9 +286,6 @@ class PhononDOSSonifier:
         stats = self.get_site_stats(site_name, temperature)
         
         band_centre_hz = stats['band_centre']
-        q25_hz = stats['quantile_25']
-        q75_hz = stats['quantile_75']
-        iqr_hz = stats['IQR']
         
         print(f"\nSonifying: {site_name} ({temp_label})")
         print(f"  Band centre: {band_centre_hz:.2e} Hz")
@@ -314,10 +308,10 @@ class PhononDOSSonifier:
                                  'volume_envelope': {'use':'off',
                             # A,D,R values in seconds, S sustain fraction from 0-1 that note
                             # will 'decay' to (after time A+D)
-                            'A':0.1,    # ✏️ Time to fade in note to maximum volume, using 10 ms
+                            'A':0.1,    # ✏️ Time to fade in note to maximum volume, using 100 ms
                             'D':0.0,    # ✏️ Time to fall from maximum volume to sustained level (s), irrelevant while S is 1 
                             'S':1.,      # ✏️ fraction of maximum volume to sustain note at while held, 1 implies 100% 
-                            'R':.2}}) # ✏️ Time to fade out once note is released, using 100 ms
+                            'R':.2}}) # ✏️ Time to fade out once note is released, using 200 ms
 
         # this needs to be updated if the fmin_audio and fmax_audio are updated and consistency with synth and spectraliser is required.
         notes = [[
@@ -371,8 +365,6 @@ class PhononDOSSonifier:
         stats = self.get_site_stats(site_name, temperature)
         
         band_centre_hz = stats['band_centre']
-        q25_hz = stats['quantile_25']
-        q75_hz = stats['quantile_75']
         iqr_hz = stats['IQR']
         
         print(f"\nSonifying: {site_name} ({temp_label})")
@@ -385,21 +377,12 @@ class PhononDOSSonifier:
         # Create Generator - use complete default
         generator = Synthesizer()
         
-        # testing here, but if implemented would have to have options for most elements (implemented as look-up table)
-        #if site_name == 'Ca_1':
-        #    generator.modify_preset(mods.brassy_mods)
-        #elif site_name == 'O_1':
-        #    generator.modify_preset(mods.organ_mods)
-        #elif site_name == 'C_1':
-        #    generator.modify_preset(mods.stringy_mods)
-        #else:
+        # TODO: per-element timbres, e.g. a look-up table from element to the preset mods in mods.py
         generator.load_preset('pitch_mapper')
         
         # Add LFO if requested
         if use_lfo:
-            q25_audio = self.map_phonon_to_audible_linlin(q25_hz)   # TODO; support switching to the other implemented mappings
-            q75_audio = self.map_phonon_to_audible_linlin(q75_hz)
-            iqr_audio = self.map_phonon_to_audible_linlin(iqr_hz)
+            iqr_audio = self.map_phonon_to_audible_linlin(iqr_hz)   # TODO; support switching to the other implemented mappings
             
             # LFO rate from IQR (1-5 Hz)
             lfo_freq = 1.0 + 4.0 * (iqr_audio - self.fmin_audible) / (self.fmax_audible - self.fmin_audible)
@@ -534,7 +517,7 @@ class PhononDOSSonifier:
         return soni
     
     def sonify_multi_site(self,
-                          site_configs: str,
+                          site_configs: List[Dict],
                           temperature: Optional[float] = None,
                           use_lfo: bool = False,
                           lfo_target: str = 'pitch',
@@ -603,7 +586,7 @@ class PhononDOSSonifier:
                           lfo_target: str = 'pitch',
                           output_path: str = None,
                           mapping: str = None,
-                          mode: bool = 'spectral') -> Sonification:
+                          mode: str = 'spectral') -> Sonification:
         """
         Convenience: sonify all sites (not the total dos)
         """
