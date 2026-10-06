@@ -32,7 +32,7 @@ phonon-sonify-yaml phonon_sonification/spec_example.yml   # create and mix sonif
 
 ## Important note
 
-This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/NU-CEM/Singing_Materials_Strauss/issues).
+This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/NU-CEM/SingingMaterials/issues).
 
 ### Package structure:
 
