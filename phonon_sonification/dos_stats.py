@@ -8,9 +8,12 @@ from phonon_sonification import mp_interface, phonopy_interface
 def dos_stats_analysis(mp_id=None,phonopy_filename=None,temp=None):
     """for each entry in a dos_dict, calculate the integrated dos, the phonon band centre, the quantiles and the IQR and of the dos distribution in Hz (discounting any negative frequencies) and add these to the nested dicts. The dos is optionally weighted by Bose Einstein occupation at a specified temp. DOS can be gotten from the materials project (mp_id) or from a phonopy summary file from the phonondb database (phonopy_filename)."""
     
-    if temp and 0 in temp:
-        print ("cannot calculate stats for 0K")
-        temp.remove(0)
+    if temp is not None:
+        if not hasattr(temp, '__iter__'):
+            temp = [temp]    # if single temp provided as scalar, convert it to iterable list
+        if 0 in temp:
+            print ("cannot calculate stats for 0K")
+        temp = [t for t in temp if t != 0]    # copy, so the caller's list is not modified
     if mp_id:    
         dos_dict = mp_interface.get_dos_raw_mp(mp_id)
     elif phonopy_filename:
@@ -33,8 +36,6 @@ def dos_stats_analysis(mp_id=None,phonopy_filename=None,temp=None):
         
         if temp:
             site_dict['stats']['thermal'] = {}
-            if not hasattr(temp, '__iter__'):
-                temp = [temp]    # if single temp provided as scalar, convert it to iterable list
             for t in temp:
                 densities_scaled = scale_by_occupation(densities, f, t)
                 site_dict['stats']['thermal'][str(t)] = {}
@@ -43,7 +44,7 @@ def dos_stats_analysis(mp_id=None,phonopy_filename=None,temp=None):
                 site_dict['stats']['thermal'][str(t)]['quantile_25'] = weighted_quantile(f, densities_scaled, 0.25)
                 site_dict['stats']['thermal'][str(t)]['quantile_75'] = weighted_quantile(f, densities_scaled, 0.75)
                 site_dict['stats']['thermal'][str(t)]['IQR'] = phonon_dos_IQR(f,densities_scaled)
-                site_dict['stats']['thermal'][str(t)]['shannon_entropy'] = phonon_shannon_entropy(f,densities)
+                site_dict['stats']['thermal'][str(t)]['shannon_entropy'] = phonon_shannon_entropy(f,densities_scaled)
                 site_dict['stats']['thermal'][str(t)]['densities'] = densities_scaled
 
     return dos_dict
@@ -85,7 +86,7 @@ def dos_dict_to_dataframe(dos_dict):
 def phonon_shannon_entropy(f,dos):
     p = dos / np.sum(dos)  # normalise to give a probability distribution
     p_nonzero = p[p > 0]  # mask out zero probs. this is legit because they are zero in the summation anyhow
-    return np.sum(p_nonzero*np.log(p_nonzero))
+    return -np.sum(p_nonzero*np.log(p_nonzero))
     
 def phonon_band_centre(f,dos):
     """for each particular chemical species, get the phonon band centre in Hz (discounting any negative frequencies). Return as a dictionary with species string as key."""
@@ -100,7 +101,9 @@ def phonon_dos_IQR(f,dos):
     return weighted_quantile(f, dos, 0.75) - weighted_quantile(f, dos, 0.25)
     
 def bose_einstien_distribution(energy,temperature):
-    return 1 / (math.exp(energy/(constants.Boltzmann*temperature)) - 1)
+    if energy <= 0:
+        return 0.0    # occupation diverges at zero energy; non-positive modes are excluded from the stats
+    return 1 / math.expm1(energy/(constants.Boltzmann*temperature))
 
 def frequency_to_energy(frequency):
     """convert frequency in Hz to energy in joules"""

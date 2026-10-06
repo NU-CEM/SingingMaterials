@@ -23,6 +23,7 @@ Requires: phonon_sonification package and MP_API_KEY in .env
 """
 
 import numpy as np
+from pathlib import Path
 from strauss.sonification import Sonification
 from strauss.sources import Events, Objects
 from strauss.score import Score
@@ -48,6 +49,9 @@ STRAUSS_BASE_NOTE = [["G2"]]
 
 # specify audio system.
 AUDIO_SYSTEM = "stereo"
+
+# default choral samples, resolved relative to the repository rather than the working directory.
+DEFAULT_CHORAL_SAMPLE_PATH = Path(__file__).resolve().parent.parent / "data" / "samples" / "Solitary_Choir" / "Samples"
 
 class PhononDOSSonifier:
     """
@@ -162,8 +166,8 @@ class PhononDOSSonifier:
             
             print(f"\n{site:>15} ({label})")
             print(f"  Band centre:  {band_centre_hz:.2e} Hz → {band_centre_note_info['audible_frequency']:.1f} Hz ({band_centre_note_info['note-octave']})")        
-            print(f"  Q25:          {band_centre_hz:.2e} Hz → {q25_note_info['audible_frequency']:.1f} Hz ({q25_note_info['note-octave']})")   
-            print(f"  Q75:          {band_centre_hz:.2e} Hz → {q75_note_info['audible_frequency']:.1f} Hz ({q75_note_info['note-octave']})")   
+            print(f"  Q25:          {q25_hz:.2e} Hz → {q25_note_info['audible_frequency']:.1f} Hz ({q25_note_info['note-octave']})")   
+            print(f"  Q75:          {q75_hz:.2e} Hz → {q75_note_info['audible_frequency']:.1f} Hz ({q75_note_info['note-octave']})")   
             print(f"  IQR:          {stats['IQR']:.2e} Hz")
             print(f"  Integrated:   {stats['integrated_dos']:.2e}")
         
@@ -268,15 +272,23 @@ class PhononDOSSonifier:
 
     def sonify_site_choral(self,
                            site_name: str,
-                           sample_path: Optional[str] = "../data/samples/Solitary_Choir/Samples/",
+                           sample_path: Optional[Union[str, Path]] = None,
                            temperature: Optional[float] = None) -> Sonification:
         """
         Sonify a single site using a choral sample.
         
         Args:
             site_name: Site to sonify (e.g., 'Fe_2', 'O_6')
+            sample_path: Directory of choral samples (defaults to data/samples/Solitary_Choir/Samples)
             temperature: Temperature in K (None for athermal)
         """
+        sample_path = Path(sample_path) if sample_path is not None else DEFAULT_CHORAL_SAMPLE_PATH
+        if not sample_path.is_dir():
+            raise FileNotFoundError(
+                f"Choral samples not found at {sample_path}. The Solitary Choir samples are not "
+                "distributed with this repository; download them and place the .wav files in this "
+                "folder, or pass sample_path.")
+
         if temperature is not None:
             temp_label = f"{int(temperature)}K"
 
@@ -305,7 +317,7 @@ class PhononDOSSonifier:
         print(f"  Volume: {volume:.2f} (from integrated dos)")
 
         # Create generator
-        generator = Sampler("../data/samples/Solitary_Choir/Samples/")
+        generator = Sampler(str(sample_path) + "/")
 
         generator.modify_preset({'note_length':self.duration,
                                  'volume_envelope': {'use':'off',
@@ -524,7 +536,7 @@ class PhononDOSSonifier:
             temp_str = f"{int(temperature)}K" if temperature else "athermal"
             lfo_str = lfo_target if use_lfo else None
             mapping_str = mapping if mapping else None
-            output = f"phonon_{self.mp_id or self.phonopy_filename}_{temperature or 'athermal'}_{mode}_{lfo_str or mapping_str or ''}_{site_name}.wav"
+            output_path = f"phonon_{self.mp_id or self.phonopy_filename}_{temp_str}_{mode}_{lfo_str or mapping_str or ''}_{site_name}.wav"
         soni.save(output_path)
         print(f"{'='*60}\n")
 
@@ -586,7 +598,7 @@ class PhononDOSSonifier:
             temp_str = f"{int(temperature)}K" if temperature else "athermal"
             site_name_str = " ".join(site_name_list)
             lfo_str = lfo_target if use_lfo else None
-            mapping_str = mapping if use_lfo else None
+            mapping_str = mapping if mapping else None
             output_path = f"phonon_{self.mp_id or self.phonopy_filename}_{temp_str}_{mode}_{lfo_str or mapping_str or ''}_{site_name_str}.wav"
         
         joint_soni.save(output_path)

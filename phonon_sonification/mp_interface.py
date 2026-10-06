@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import mp_api
+import numpy as np
 import os
 from mp_api.client import MPRester
 from phonon_sonification import utilities
@@ -17,12 +17,11 @@ def gamma_frequencies_from_mp_id(mp_id):
     with MPRester(os.getenv('MP_API_KEY')) as mpr:
         try:
             bs = mpr.get_phonon_bandstructure_by_material_id(mp_id)
-        except:
-            print("this materials project entry does not appear to have phonon data")
-            pass
+        except Exception as e:
+            raise ValueError(f"Materials Project entry {mp_id} does not appear to have phonon data") from e
     print("extracting frequencies for qpoint {}".format(bs.qpoints[0].cart_coords))
 
-    phonon_frequencies = list(bs.to_pmg.bands[:,0*1E12])   # convert from THz to Hz
+    phonon_frequencies = list(bs.to_pmg.bands[:,0]*1E12)   # convert from THz to Hz
     phonon_frequencies = utilities.process_imaginary(phonon_frequencies)
     print("phonon frequencies are (Hz):", phonon_frequencies)
 
@@ -35,11 +34,10 @@ def dos_data_from_mp_id(mp_id):
 
     with MPRester(os.getenv('MP_API_KEY')) as mpr:
 
-        try: 
+        try:
             dos = mpr.get_phonon_dos_by_material_id(mp_id)
-        except:
-            print("this materials project entry does not appear to have phonon data")
-            pass
+        except Exception as e:
+            raise ValueError(f"Materials Project entry {mp_id} does not appear to have phonon data") from e
 
     return dos
 
@@ -59,17 +57,18 @@ def get_dos_raw_mp(mp_id):
         dos_dict['metadata'] = {'mp_id' : mp_id}
         dos_dict['projection'] = {}
     
-        frequencies = np.array(dos.frequencies)*1E12 # convert from THz to Hz
-        frequencies = utilities.process_imaginary(frequencies)  
+        raw_frequencies = np.array(dos.frequencies)*1E12 # convert from THz to Hz
+        frequencies = utilities.process_imaginary(raw_frequencies)
         dos_dict['metadata']['bin_width'] = frequencies[1]-frequencies[0]
         print(f"bin width is {dos_dict['metadata']['bin_width']/1E12} THz")
         
-        densities = utilities.process_imaginary_dos(dos.densities,frequencies) 
+        # filter densities against the unfiltered frequencies so the two stay aligned
+        densities = utilities.process_imaginary_dos(dos.densities,raw_frequencies) 
         dos_dict['projection']['total'] = {'densities': densities,
                                          'frequencies': frequencies}
                 
         for i,site in enumerate(dos.structure.relabel_sites().sites):
-            densities = utilities.process_imaginary_dos(dos.projected_densities[i],frequencies) 
+            densities = utilities.process_imaginary_dos(dos.projected_densities[i],raw_frequencies) 
             dos_dict['projection'][site.label] = {'densities': densities,
                                                             'frequencies': frequencies} 
     

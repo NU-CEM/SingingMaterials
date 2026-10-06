@@ -38,8 +38,8 @@ def get_dos_raw_phonopy(
     projected = np.asarray(pdos.projected_dos)     # (n_atoms_primitive, n_freq)
  
     # Phonopy works in THz; convert to Hz for consistency with mp.
-    frequencies = freq_thz * _THZ_TO_HZ
-    frequencies = utilities.process_imaginary(frequencies)  
+    raw_frequencies = freq_thz * _THZ_TO_HZ
+    frequencies = utilities.process_imaginary(raw_frequencies)
     bin_width = np.float64(frequencies[1] - frequencies[0])
  
     # Per-atom labels: count occurrences of each species in the primitive cell.
@@ -52,8 +52,9 @@ def get_dos_raw_phonopy(
 
     # Apply imaginary-mode cleanup per atom, then rebuild total from the
     # cleaned per-atom densities so total == sum-of-atoms still holds.
+    # Filter against the unfiltered frequencies so densities stay aligned.
     cleaned = np.stack([
-        utilities.process_imaginary_dos(density, frequencies)
+        utilities.process_imaginary_dos(density, raw_frequencies)
         for density in projected
     ])
     total_density = cleaned.sum(axis=0)
