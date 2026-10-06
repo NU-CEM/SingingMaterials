@@ -4,7 +4,9 @@ import os
 from mp_api.client import MPRester
 from phonon_sonification import utilities
 from pathlib import Path
+import json
 import pickle
+import warnings
 
 load_dotenv () # use python-dotenv library for storing secrets in a .env file in project route (or at another path that is specified here)
 
@@ -42,12 +44,20 @@ def dos_data_from_mp_id(mp_id):
     return dos
 
 def get_dos_raw_mp(mp_id):
-    """get the full and projected densities. Return as a nested dictionary. Arg is the materials project ID. """
+    """get the full and projected densities. Return as a nested dictionary. Arg is the materials project ID.
+    The result is cached in the working directory as {mp_id}_dos.json; delete this file to re-fetch."""
 
-    filepath = Path(f"{mp_id}_dos.pickle")
+    filepath = Path(f"{mp_id}_dos.json")
+    legacy_filepath = Path(f"{mp_id}_dos.pickle")
     if filepath.is_file():
         print("Fetching from existing file...")
-        with open(filepath, 'rb') as handle:
+        dos_dict = load_dos_json(filepath)
+    elif legacy_filepath.is_file():
+        print("Fetching from existing file...")
+        warnings.warn(f"{legacy_filepath} was cached by an older version of phonon_sonification, which could "
+                      "misalign densities and frequencies when imaginary modes were removed. Delete it to "
+                      "re-fetch from the Materials Project.")
+        with open(legacy_filepath, 'rb') as handle:
             dos_dict = pickle.load(handle)
     else:
         print("Fetching from Materials Project servers...")
@@ -72,7 +82,26 @@ def get_dos_raw_mp(mp_id):
             dos_dict['projection'][site.label] = {'densities': densities,
                                                             'frequencies': frequencies} 
     
-        with open(filepath, 'wb') as handle:
-            pickle.dump(dos_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        save_dos_json(dos_dict, filepath)
         
+    return dos_dict
+
+def save_dos_json(dos_dict, filepath):
+    """save a raw dos dict (metadata and projections, no stats) to a json file."""
+    serialisable = {
+        'metadata': {key: (float(value) if isinstance(value, np.floating) else value)
+                     for key, value in dos_dict['metadata'].items()},
+        'projection': {site: {key: np.asarray(values).tolist() for key, values in data.items()}
+                       for site, data in dos_dict['projection'].items()},
+    }
+    with open(filepath, 'w') as handle:
+        json.dump(serialisable, handle)
+
+def load_dos_json(filepath):
+    """load a raw dos dict saved by save_dos_json, restoring the numpy arrays."""
+    with open(filepath) as handle:
+        dos_dict = json.load(handle)
+    for data in dos_dict['projection'].values():
+        for key in data:
+            data[key] = np.array(data[key])
     return dos_dict

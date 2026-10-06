@@ -32,20 +32,46 @@ def test_fetch_builds_aligned_dos_dict_and_caches(tmp_path, monkeypatch):
     np.testing.assert_array_equal(d["projection"]["Mg_1"]["densities"], [3.0, 4.0, 5.0])
     np.testing.assert_array_equal(d["projection"]["O_1"]["densities"], [30.0, 40.0, 50.0])
     assert d["metadata"] == {"mp_id": "mp-test", "bin_width": pytest.approx(1e12)}
-    assert (tmp_path / "mp-test_dos.pickle").is_file()
+    assert (tmp_path / "mp-test_dos.json").is_file()
 
 
-def test_reads_from_cache_without_network(tmp_path, monkeypatch):
+def no_network(mp_id):
+    raise AssertionError("should not query the Materials Project when a cache exists")
+
+
+def test_reads_json_cache_without_network(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(mp_interface, "dos_data_from_mp_id", lambda mp_id: fake_mp_dos())
+    fetched = mp_interface.get_dos_raw_mp("mp-test")
+
+    monkeypatch.setattr(mp_interface, "dos_data_from_mp_id", no_network)
+    cached = mp_interface.get_dos_raw_mp("mp-test")
+    assert cached["metadata"] == fetched["metadata"]
+    for site, data in fetched["projection"].items():
+        for key in ("densities", "frequencies"):
+            assert isinstance(cached["projection"][site][key], np.ndarray)
+            np.testing.assert_array_equal(cached["projection"][site][key], data[key])
+
+
+def test_reads_legacy_pickle_with_warning(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     cached = {"metadata": {"mp_id": "mp-test"}, "projection": {}}
     with open(tmp_path / "mp-test_dos.pickle", "wb") as handle:
         pickle.dump(cached, handle)
 
-    def no_network(mp_id):
-        raise AssertionError("should not query the Materials Project when a cache exists")
-
     monkeypatch.setattr(mp_interface, "dos_data_from_mp_id", no_network)
-    assert mp_interface.get_dos_raw_mp("mp-test") == cached
+    with pytest.warns(UserWarning, match="older version"):
+        assert mp_interface.get_dos_raw_mp("mp-test") == cached
+
+
+def test_json_round_trip(raw_dos_dict, tmp_path):
+    mp_interface.save_dos_json(raw_dos_dict, tmp_path / "dos.json")
+    restored = mp_interface.load_dos_json(tmp_path / "dos.json")
+    assert restored["metadata"] == raw_dos_dict["metadata"]
+    assert set(restored["projection"]) == set(raw_dos_dict["projection"])
+    for site, data in raw_dos_dict["projection"].items():
+        for key in ("densities", "frequencies"):
+            np.testing.assert_array_equal(restored["projection"][site][key], data[key])
 
 
 def test_missing_phonon_data_raises(monkeypatch):
