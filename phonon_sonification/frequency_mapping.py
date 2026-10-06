@@ -128,6 +128,8 @@ def phonon_to_note(
             fmin_audio,
             fmax_audio
         )
+    else:
+        raise ValueError(f"mapping '{mapping}' not recognised; use 'linearscaling', 'log' or 'loglog'")
 
     note, octave = frequency_to_note(f_audio)
     note_octave = note+str(octave)

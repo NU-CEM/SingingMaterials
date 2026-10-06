@@ -23,7 +23,7 @@ def start_mixing(outputs,job_order,spec):
     elif mode == "concat":
         cmd += concatenation(outputs,job_order,mix,spec)
     else:
-        RaiseError("mode not recognised")
+        raise ValueError(f"mix mode '{mode}' not recognised; use 'super' or 'concat'")
 
     print("Running:", " ".join(cmd))
     subprocess.run(cmd, check=True)
@@ -66,7 +66,7 @@ def concatenation(outputs,job_order,mix,spec):
 
     order = mix.get("order")
 
-    if (order is str) and (order.split()[0] == "random"):
+    if isinstance(order, str) and (order.split()[0] == "random"):
         jobs = spec["jobs"]
         job_names = []
         for job in jobs:

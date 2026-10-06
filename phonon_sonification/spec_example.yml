@@ -20,7 +20,7 @@ mix:
   curve: tri        
   mode: super  
   # order: ["one", "six", "two","three","six", "five", "three", "five"]
-  weight:
+  weights:
     one: 0.3
     two: 0.7
 
