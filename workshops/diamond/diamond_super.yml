@@ -15,7 +15,7 @@ jobs:
     sites: all
 
 mix:
-  output: diamond_mix.wav
+  output: diamond_super_mix.wav
   curve: tri        
   mode: super 
   weights:

@@ -21,7 +21,7 @@ jobs:
     sites: all
 
 mix:
-  output: diamond_mix.wav
+  output: diamond_concat_mix.wav
   fade: 2.0          
   curve: tri        
   mode: concat  

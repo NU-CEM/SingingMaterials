@@ -1,4 +1,4 @@
-mp_id: mp-3953
+mp_id: mp-48
 
 globals:
   duration: 10.0   
@@ -10,26 +10,26 @@ jobs:
 
   - name: two
     mode: choral
-    sites: Ca_1
+    sites: C_1
 
   - name: three
     mode: choral
-    sites: O_1
+    sites: C_2
 
   - name: four
     mode: spectral
-    sites: Ca_1
+    sites: C_1
 
   - name: five
     mode: spectral
-    sites: O_1
+    sites: C_2
 
   - name: six
     mode: choral
     sites: all
 
 mix:
-  output: CaO_mix.wav
+  output: graphite_concat_mix.wav
   fade: 9.0          
   curve: tri        
   mode: concat  

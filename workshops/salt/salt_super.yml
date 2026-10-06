@@ -9,9 +9,10 @@ jobs:
   - name: two
     mode: choral
     sites: all
+    output: salt_super_choral_all.wav   # distinct from the concat spec's job, which uses a different frequency range
 
 mix:
-  output: salt_mix.wav
+  output: salt_super_mix.wav
   curve: tri        
   mode: super 
   weights:

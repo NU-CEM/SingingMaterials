@@ -30,7 +30,7 @@ jobs:
     sites: all
 
 mix:
-  output: CaO_mix.wav
+  output: CaCO3_300_mix.wav
   fade: 9.0          
   curve: tri        
   mode: concat  

@@ -34,8 +34,9 @@ def run_spec(path: str):
     duration = globals_cfg.get("duration", 10.0)
     fmin_phonon = globals_cfg.get("fmin_phonon", None)
     fmax_phonon = globals_cfg.get("fmax_phonon", None)
-    mp_id = globals_cfg.get("mp_id", None)
-    phonopy_filename = globals_cfg.get("phonopy_filename", None)
+    # data source can be given under globals or, as in older specs, at the top level
+    mp_id = globals_cfg.get("mp_id", spec.get("mp_id"))
+    phonopy_filename = globals_cfg.get("phonopy_filename", spec.get("phonopy_filename"))
 
     sonifier = PhononDOSSonifier(
                 mp_id=mp_id,
