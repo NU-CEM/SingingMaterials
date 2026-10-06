@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phonon-sonification"
+version = "0.1.0"
+description = "Sonification of first-principles phonon data using Strauss"
+readme = "phonon_sonification/README.md"
+license = "MIT"
+license-files = ["LICENSE.md"]
+authors = [{ name = "Lucy Whalley" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "pyyaml",
+    "python-dotenv",
+    "mp-api",
+    "strauss",
+]
+
+[project.optional-dependencies]
+phonopy = ["phonopy"]
+test = ["pytest"]
+
+[project.scripts]
+phonon-sonify = "phonon_sonification.cli:main"
+phonon-sonify-yaml = "phonon_sonification.run_from_yaml:main"
+
+[project.urls]
+Repository = "https://github.com/NU-CEM/SingingMaterials"
+Issues = "https://github.com/NU-CEM/SingingMaterials/issues"
+
+[tool.setuptools]
+packages = ["phonon_sonification"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

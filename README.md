@@ -72,9 +72,8 @@ All the data in this repository has been published as part of our [recent study]
 The notebooks contain links to audio files so that you can listen through your browser to the sonifications which are produced by the code.
 
 If you want to edit or run the notebooks locally you will need to:
-- install the [Strauss](https://www.audiouniverse.org/research/strauss) python package.
-- install the [Materials Project API](https://docs.materialsproject.org/downloading-data/using-the-api/getting-started) python package.
-- register for a Materials Project account generate an API key. More details are [here](https://next-gen.materialsproject.org/api).
-- store the Materials Project API Key in a `.env` file with the MP_API_KEY variable.
 - `git clone` this full repository, which contains the necessary data, and the `phonon_sonification` Python package.
+- install the `phonon_sonification` package and its dependencies (including [Strauss](https://www.audiouniverse.org/research/strauss) and the [Materials Project API](https://docs.materialsproject.org/downloading-data/using-the-api/getting-started)) by running `pip install -e .` from the root of the repository.
+- register for a Materials Project account and generate an API key. More details are [here](https://next-gen.materialsproject.org/api).
+- store the Materials Project API Key in a `.env` file with the MP_API_KEY variable.
 

@@ -3,8 +3,8 @@ import itertools
 import re
 from copy import deepcopy
 from pathlib import Path
-from phonon_dos_sonifier import PhononDOSSonifier
-from phonon_mixer import start_mixing
+from phonon_sonification.phonon_dos_sonifier import PhononDOSSonifier
+from phonon_sonification.phonon_mixer import start_mixing
 
 KEY_MAP = {    # TO FIX: THIS IS USED FOR NAMING FILES BUT IS INCONSISTENT WITH CLI
   "mode": "m",
@@ -140,6 +140,12 @@ def build_filename(cfg):
 
     return "_".join(parts) + ".wav"
 
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Create and mix phonon DOS sonifications from a yaml spec")
+    parser.add_argument('spec', help='Path to yaml spec file (see spec_example.yml)')
+    args = parser.parse_args()
+    run_spec(args.spec)
+
 if __name__ == "__main__":
-    import sys
-    run_spec(sys.argv[1])
+    main()

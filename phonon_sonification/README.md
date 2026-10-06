@@ -7,6 +7,29 @@
 - The package is designed to by extendable, so that new types of phonon data, new data interfaces, and new sonifications can all be considered.
 - This package will eventually power a Singing Materials web app.
 
+## Installation
+
+From the root of the repository:
+
+```bash
+pip install -e .            # core package
+pip install -e ".[phonopy]" # also install phonopy, needed to read phonondb files
+pip install -e ".[test]"    # also install pytest, to run the test suite with `pytest`
+```
+
+Mixing sonifications also needs [`ffmpeg`](https://ffmpeg.org/) on your path. To read data from the Materials Project, store your API key as `MP_API_KEY` in a `.env` file.
+
+The choral sonification uses the Solitary Choir samples, which are not distributed with this repository. Place the sample `.wav` files in `data/samples/Solitary_Choir/Samples/`, or pass `sample_path` to `sonify_site_choral`.
+
+## Usage
+
+```bash
+phonon-sonify mp-3953 --info --temp 300          # print the sites available for a material
+phonon-sonify mp-3953 --temp 300 --all-sites     # sonify all sites (spectral mode by default)
+phonon-sonify mp-3953 --site O_6 --mode synth --lfo
+phonon-sonify-yaml phonon_sonification/spec_example.yml   # create and mix sonifications from a spec file
+```
+
 ## Important note
 
 This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/NU-CEM/Singing_Materials_Strauss/issues).
@@ -27,7 +50,7 @@ This is alpha-release software: it has been tested, but there are likely still b
 
 `cli.py` : command-line-interface for the `phonon_dos_sonifier` module. Allows the user to create `.wav` files for the spectral, synth or choral sonifications, but does not allow user to mix these together.
 
-`run_from_yaml.py` : reads in the `sonification_batch.yml` and uses these to create and mix sonifications. 
+`run_from_yaml.py` : reads in a `.yml` spec file (see `spec_example.yml`) and uses it to create and mix sonifications. 
 
 `spec_example.yml` : example yml file which specifies how to create the sonifications and mix them together.
 

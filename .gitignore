@@ -29,6 +29,14 @@ __pypackages__/
 
 __pycache__/
 
+# packaging build artefacts
+*.egg-info/
+build/
+dist/
+
+# pytest
+.pytest_cache/
+
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid

@@ -3,7 +3,7 @@ import pandas as pd
 import math
 import scipy
 from scipy import constants
-from phonon_sonification import mp_interface, phonopy_interface
+from phonon_sonification import mp_interface
 
 def dos_stats_analysis(mp_id=None,phonopy_filename=None,temp=None):
     """for each entry in a dos_dict, calculate the integrated dos, the phonon band centre, the quantiles and the IQR and of the dos distribution in Hz (discounting any negative frequencies) and add these to the nested dicts. The dos is optionally weighted by Bose Einstein occupation at a specified temp. DOS can be gotten from the materials project (mp_id) or from a phonopy summary file from the phonondb database (phonopy_filename)."""
@@ -17,6 +17,7 @@ def dos_stats_analysis(mp_id=None,phonopy_filename=None,temp=None):
     if mp_id:    
         dos_dict = mp_interface.get_dos_raw_mp(mp_id)
     elif phonopy_filename:
+        from phonon_sonification import phonopy_interface    # optional dependency, so only import when needed
         dos_dict = phonopy_interface.get_dos_raw_phonopy(phonopy_filename)
     else:
         raise ValueError('You must specify a dos data source (mp_id or phonopy_filename)')

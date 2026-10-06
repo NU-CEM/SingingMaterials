@@ -27,21 +27,12 @@ from pathlib import Path
 from strauss.sonification import Sonification
 from strauss.sources import Events, Objects
 from strauss.score import Score
-try:
-    from strauss.generator import Synthesizer, Sampler, Spectralizer
-except ImportError:
-    from strauss.generator import Synthesizer, Sampler, Spectralizer
+from strauss.generator import Synthesizer, Sampler, Spectralizer
 
 from typing import Dict, List, Tuple, Optional, Union
 import warnings
 
-# Import your existing modules
-
-import sys
-sys.path.append('../')
-from phonon_sonification import dos_stats, utilities, frequency_mapping, mods
 from phonon_sonification.dos_stats import dos_stats_analysis, scale_by_occupation
-from phonon_sonification.utilities import format_duration_for_strauss
 from phonon_sonification.frequency_mapping import phonon_to_audible_linlin, phonon_to_note
 
 # STRAUSS Score requires a chord or note sequence. 

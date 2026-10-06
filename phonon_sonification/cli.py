@@ -1,6 +1,6 @@
 
 import argparse
-from phonon_dos_sonifier import PhononDOSSonifier
+from phonon_sonification.phonon_dos_sonifier import PhononDOSSonifier
 
 def example_usage():
     """Example usage"""
@@ -43,8 +43,7 @@ def example_usage():
     print("="*60)
 
 
-if __name__ == "__main__":
-  
+def main():
     print("="*60)
     print("Phonon DOS Sonification with STRAUSS")
     print("="*60)
@@ -138,10 +137,10 @@ if __name__ == "__main__":
             else:
                 print("\nError: Specify --info, --all-sites, --site, or --sites")
                 print("\nQuick examples:")
-                print(f"  python phonon_dos_sonifier.py mp-3953 --info --temp 300")
-                print(f"  python phonon_dos_sonifier.py mp-3953 --temp 50 --all-sites")
-                print(f"  python phonon_dos_sonifier.py mp-3953 --site O_6 --lfo")
-                print(f"  python phonon_dos_sonifier.py mp-3953 --temp 300 --sites O_6 Ca_1")
+                print(f"  phonon-sonify mp-3953 --info --temp 300")
+                print(f"  phonon-sonify mp-3953 --temp 50 --all-sites")
+                print(f"  phonon-sonify mp-3953 --site O_6 --lfo")
+                print(f"  phonon-sonify mp-3953 --temp 300 --sites O_6 Ca_1")
         
         else:
             print("\nError: Provide mp_id or use --examples")
@@ -154,3 +153,7 @@ if __name__ == "__main__":
         print(f"\nError: {e}")
         import traceback
         traceback.print_exc()
+
+
+if __name__ == "__main__":
+    main()
