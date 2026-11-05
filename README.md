@@ -21,6 +21,8 @@ This is alpha-release software: it has been tested, but there are likely still b
 pip install "SingingMaterials[all]"
 ```
 
+SingingMaterials supports Python 3.11 to 3.14. On newer versions of Python, dependencies such as `h5py` may not have pre-built wheels yet, and the install can fail.
+
 This installs everything. The package is then imported in Python as `singingmaterials`. To leave out dependencies you don't need, choose from these options instead:
 
 | Option | Needed to | Installs |
@@ -67,13 +69,18 @@ sonifier.sonify_all_sites(temperature=300, output_path="mp-3953.wav")
 ### Data and statistics only
 
 ```python
-from singingmaterials.dos_stats import dos_dict_to_dataframe, dos_stats_analysis
+from singingmaterials.dos_stats import (
+    dos_dict_to_dataframe,
+    dos_stats_analysis,
+    visualisation,
+)
 
 dos_dict = dos_stats_analysis(mp_id="mp-3953", temp=300)
 print(
     dos_dict["projection"]["total"]["stats"]["thermal"]["300"]["band_centre"]
 )  # in Hz
 print(dos_dict_to_dataframe(dos_dict))
+visualisation.plot_dos_at_temperature(dos_dict)
 ```
 
 ## Package structure

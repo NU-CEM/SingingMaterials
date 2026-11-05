@@ -19,7 +19,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install package
-        run: pip install -e ".[sound,mp,test]"
+        run: pip install -e ".[all,test]"
       - name: Run tests
         run: pytest
 
