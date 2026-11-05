@@ -1,0 +1,2 @@
+# setuptools only picks up test_*.py by itself
+include tests/conftest.py

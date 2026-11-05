@@ -1,4 +1,7 @@
+import os
 import pickle
+import subprocess
+import sys
 from types import SimpleNamespace
 
 import numpy as np
@@ -37,6 +40,17 @@ def test_fetch_builds_aligned_dos_dict_and_caches(tmp_path, monkeypatch):
 
 def no_network(mp_id):
     raise AssertionError("should not query the Materials Project when a cache exists")
+
+
+def test_dotenv_found_from_working_directory(tmp_path):
+    # run as a script, as dotenv searches from the working directory anyway for `python -c`
+    (tmp_path / ".env").write_text("MP_API_KEY=from_dotenv\n")
+    (tmp_path / "script.py").write_text(
+        "import os\nfrom phonon_sonification import mp_interface\nprint(os.getenv('MP_API_KEY'))\n")
+    env = {k: v for k, v in os.environ.items() if k != "MP_API_KEY"}
+    result = subprocess.run([sys.executable, "script.py"], cwd=tmp_path, env=env,
+                            capture_output=True, text=True, check=True)
+    assert result.stdout.strip() == "from_dotenv"
 
 
 def test_reads_json_cache_without_network(tmp_path, monkeypatch):

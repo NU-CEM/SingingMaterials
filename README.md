@@ -3,7 +3,7 @@
 This repository explores the sonification of atomistic simulation data using the [Strauss](https://www.audiouniverse.org/research/strauss) software package.
 We use sonification to listen to the vibrations of materials at an atomic scale; *to hear how the materials sing*.
 
-There are two key parts to this repository. The first is the `phonon_sonification` Python package which is contained in the `phonon_sonification` folder. There are more details about this package in the folder's [README.md](./phonon_sonification/README.md). The second are the code and sound examples dotted in the `notebooks` folder; these demonstrate what the `phonon_sonification` and Strauss packages can do when applied to materials modelling data.
+There are two key parts to this repository. The first is the `phonon_sonification` Python package which is contained in the `phonon_sonification` folder. It can be installed on its own with `pip install phonon-sonification`, and there are more details in the folder's [README.md](./phonon_sonification/README.md). The second are the code and sound examples dotted in the `notebooks` folder; these demonstrate what the `phonon_sonification` and Strauss packages can do when applied to materials modelling data.
 
 This work has been published in the following pre-print (and will be later published as part of [ICAD proceedings](https://interactive-sonification.org/icad2026/)). A `.bib` file is in the repo, and the plain-text citation is: Whalley, L., Shepherd, R., Boehringer, J., Knotts, S., Vickers, P., Caselton, G., Harrison, C., Hogg, B., Ratliff, D., Davenport, C., & Portas, A. (2026). *Singing Materials: Initial experiments in applying sonification to phonon spectra.* arXiv:2603.29037 [cond-mat.mtrl-sci]
 
@@ -73,7 +73,7 @@ The notebooks contain links to audio files so that you can listen through your b
 
 If you want to edit or run the notebooks locally you will need to:
 - `git clone` this full repository, which contains the necessary data, and the `phonon_sonification` Python package.
-- install the `phonon_sonification` package and its dependencies (including [Strauss](https://www.audiouniverse.org/research/strauss) and the [Materials Project API](https://docs.materialsproject.org/downloading-data/using-the-api/getting-started)) by running `pip install -e .` from the root of the repository.
+- install the `phonon_sonification` package and its dependencies from your clone (including [Strauss](https://www.audiouniverse.org/research/strauss) and the [Materials Project API](https://docs.materialsproject.org/downloading-data/using-the-api/getting-started)) by running `pip install -e .` from the root of the repository.
 - register for a Materials Project account and generate an API key. More details are [here](https://next-gen.materialsproject.org/api).
 - store the Materials Project API Key in a `.env` file with the MP_API_KEY variable.
 
@@ -86,6 +86,7 @@ The repository maintainer asked for a review of the repository, chose which sugg
 
 - fixing bugs in the `phonon_sonification` package, including a bug that misaligned phonon densities and frequencies when imaginary modes were removed, and an incorrect sign in the Shannon entropy;
 - packaging (`pyproject.toml`, command-line entry points), a `pytest` test suite and a GitHub Actions workflow;
+- preparing the package for release on PyPI, including a publishing workflow, finding `.env` files and choral samples when the package is installed outside a clone, and exporting `PhononDOSSonifier` from the package;
 - removing unused code, caching Materials Project data as JSON rather than pickle, tidying the READMEs and adding `CITATION.cff`;
 - organising the `workshops` folder and correcting material IDs in the quartz, salt and graphite specs.
 

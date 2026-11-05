@@ -22,6 +22,7 @@ Features:
 Requires: phonon_sonification package and MP_API_KEY in .env
 """
 
+import os
 import numpy as np
 from pathlib import Path
 from strauss.sonification import Sonification
@@ -40,7 +41,9 @@ STRAUSS_BASE_NOTE = [["G2"]]
 # specify audio system.
 AUDIO_SYSTEM = "stereo"
 
-# default choral samples, resolved relative to the repository rather than the working directory.
+# default choral samples for a clone of the repository, resolved relative to it rather than the working directory.
+# The samples are not distributed with the package, so other installs set this variable to their location.
+CHORAL_SAMPLES_ENV_VAR = "PHONON_CHORAL_SAMPLES"
 DEFAULT_CHORAL_SAMPLE_PATH = Path(__file__).resolve().parent.parent / "data" / "samples" / "Solitary_Choir" / "Samples"
 
 class PhononDOSSonifier:
@@ -267,15 +270,19 @@ class PhononDOSSonifier:
         
         Args:
             site_name: Site to sonify (e.g., 'Fe_2', 'O_6')
-            sample_path: Directory of choral samples (defaults to data/samples/Solitary_Choir/Samples)
+            sample_path: Directory of choral samples (defaults to the PHONON_CHORAL_SAMPLES environment
+                variable, then data/samples/Solitary_Choir/Samples in a clone of the repository)
             temperature: Temperature in K (None for athermal)
         """
-        sample_path = Path(sample_path) if sample_path is not None else DEFAULT_CHORAL_SAMPLE_PATH
+        if sample_path is None:
+            sample_path = os.getenv(CHORAL_SAMPLES_ENV_VAR) or DEFAULT_CHORAL_SAMPLE_PATH
+        sample_path = Path(sample_path)
         if not sample_path.is_dir():
             raise FileNotFoundError(
                 f"Choral samples not found at {sample_path}. The Solitary Choir samples are not "
-                "distributed with this repository; download them and place the .wav files in this "
-                "folder, or pass sample_path.")
+                "distributed with this package; download them and point the "
+                f"{CHORAL_SAMPLES_ENV_VAR} environment variable at the folder of .wav files, "
+                "or pass sample_path.")
 
         if temperature is not None:
             temp_label = f"{int(temperature)}K"

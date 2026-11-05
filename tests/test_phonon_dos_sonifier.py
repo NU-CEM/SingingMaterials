@@ -77,6 +77,18 @@ def test_choral_missing_samples_raises(sonifier, tmp_path):
         sonifier.sonify_site_choral("A_1", sample_path=tmp_path / "missing")
 
 
+def test_choral_samples_read_from_environment(sonifier, tmp_path, monkeypatch):
+    missing = tmp_path / "from_env"
+    monkeypatch.setenv("PHONON_CHORAL_SAMPLES", str(missing))
+    with pytest.raises(FileNotFoundError, match="from_env"):
+        sonifier.sonify_site_choral("A_1")
+
+
+def test_sonifier_exported_from_package():
+    import phonon_sonification
+    assert phonon_sonification.PhononDOSSonifier is PhononDOSSonifier
+
+
 def test_unknown_mode_raises(sonifier):
     with pytest.raises(AssertionError, match="mode not recognised"):
         sonifier.sonify_single_site("A_1", mode="kazoo")

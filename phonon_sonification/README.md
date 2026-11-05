@@ -4,22 +4,21 @@
 - At the moment the focus is on phonon density of states data, which is read in from the [Materials Project](https://next-gen.materialsproject.org/) or [phonondb](https://github.com/atztogo/phonondb/blob/main/mdr/phonondb/README.md) databases.
 - Currently three sonification types are supported: spectral, synth and choral. These can be mixed together in different ways (superimpose, concatenate or a mixture of the two). Mixing is implemented through `ffmpeg`.
 - Users are encouraged to use `.yml` files rather than the command line interface to create and mix sonifications. The command line interface does not allow mixing.
-- The package is designed to by extendable, so that new types of phonon data, new data interfaces, and new sonifications can all be considered.
+- The package is designed to be extendable, so that new types of phonon data, new data interfaces, and new sonifications can all be considered.
 - This package will eventually power a Singing Materials web app.
 
 ## Installation
 
-From the root of the repository:
-
 ```bash
-pip install -e .            # core package
-pip install -e ".[phonopy]" # also install phonopy, needed to read phonondb files
-pip install -e ".[test]"    # also install pytest, to run the test suite with `pytest`
+pip install phonon-sonification            # core package
+pip install "phonon-sonification[phonopy]" # also install phonopy, needed to read phonondb files
 ```
 
-Mixing sonifications also needs [`ffmpeg`](https://ffmpeg.org/) on your path. To read data from the Materials Project, store your API key as `MP_API_KEY` in a `.env` file.
+To work on the package itself, clone the [repository](https://github.com/NU-CEM/SingingMaterials) and run `pip install -e ".[test]"` from its root. This also installs pytest, to run the test suite with `pytest`.
 
-The choral sonification uses the Solitary Choir samples, which are not distributed with this repository. Place the sample `.wav` files in `data/samples/Solitary_Choir/Samples/`, or pass `sample_path` to `sonify_site_choral`.
+Mixing sonifications also needs [`ffmpeg`](https://ffmpeg.org/) on your path. To read data from the Materials Project, store your API key as `MP_API_KEY` in a `.env` file in your working directory (or one of its parents), or set it as an environment variable.
+
+The choral sonification uses the Solitary Choir samples, which are not distributed with this package. Set the `PHONON_CHORAL_SAMPLES` environment variable to the folder holding the sample `.wav` files, or pass `sample_path` to `sonify_site_choral`. In a clone of the repository you can instead place them in `data/samples/Solitary_Choir/Samples/`.
 
 ## Usage
 
@@ -27,7 +26,19 @@ The choral sonification uses the Solitary Choir samples, which are not distribut
 phonon-sonify mp-3953 --info --temp 300          # print the sites available for a material
 phonon-sonify mp-3953 --temp 300 --all-sites     # sonify all sites (spectral mode by default)
 phonon-sonify mp-3953 --site O_6 --mode synth --lfo
-phonon-sonify-yaml phonon_sonification/spec_example.yml   # create and mix sonifications from a spec file
+phonon-sonify-yaml my_spec.yml                   # create and mix sonifications from a spec file
+```
+
+See [`spec_example.yml`](https://github.com/NU-CEM/SingingMaterials/blob/main/phonon_sonification/spec_example.yml) for the spec file format.
+
+To use the package from your own Python code:
+
+```python
+from phonon_sonification import PhononDOSSonifier
+
+sonifier = PhononDOSSonifier(mp_id="mp-3953", temperatures=[300], duration=10.0)
+sonifier.print_available_sites(temperature=300)
+sonifier.sonify_all_sites(temperature=300, output_path="mp-3953.wav")
 ```
 
 ## Important note

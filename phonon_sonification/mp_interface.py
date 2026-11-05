@@ -1,4 +1,4 @@
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 import numpy as np
 import os
 from mp_api.client import MPRester
@@ -8,7 +8,9 @@ import json
 import pickle
 import warnings
 
-load_dotenv () # use python-dotenv library for storing secrets in a .env file in project route (or at another path that is specified here)
+# use python-dotenv library for storing secrets in a .env file in the working directory or one of its parents.
+# usecwd is needed as the default search starts from this file, which is in site-packages once installed.
+load_dotenv(find_dotenv(usecwd=True))
 
 def gamma_frequencies_from_mp_id(mp_id):
     """return phonon frequencies (in Hz) at gamma point from for a material hosted on the Materials Project.
