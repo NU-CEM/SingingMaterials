@@ -13,16 +13,23 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12", "3.13", "3.14"]
     steps:
-      # only fetch the code: the repo also holds several hundred MB of data and audio
       - uses: actions/checkout@v4
-        with:
-          filter: blob:none
-          sparse-checkout: |
-            phonon_sonification
-            tests
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install package
+        run: pip install -e ".[sound,mp,test]"
+      - name: Run tests
+        run: pytest
+
+  test-without-optional-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
           cache: pip
       - name: Install package
         run: pip install -e ".[test]"

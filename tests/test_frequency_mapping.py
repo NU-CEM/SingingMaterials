@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from phonon_sonification import frequency_mapping as fm
+from singingmaterials import frequency_mapping as fm
 
 FMIN_PH, FMAX_PH = 1e12, 2e13
 FMIN_AU, FMAX_AU = 98.0, 587.33

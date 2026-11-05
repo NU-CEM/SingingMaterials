@@ -2,7 +2,7 @@ import pytest
 
 pytest.importorskip("strauss")
 
-from phonon_sonification import run_from_yaml
+from singingmaterials import run_from_yaml
 
 
 def test_expand_sweeps_is_cartesian_product():

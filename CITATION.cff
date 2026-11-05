@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite the paper below."
 title: "SingingMaterials"
-abstract: "Sonification of atomistic simulation data, including the phonon_sonification Python package."
+abstract: "SingingMaterials: a Python package for the sonification of first-principles phonon data."
 type: software
 license: MIT
 repository-code: "https://github.com/NU-CEM/SingingMaterials"

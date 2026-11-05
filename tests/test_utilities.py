@@ -1,6 +1,6 @@
 import numpy as np
 
-from phonon_sonification import utilities
+from singingmaterials import utilities
 
 
 def test_process_imaginary_removes_non_positive():

@@ -2,7 +2,7 @@ import pytest
 
 pytest.importorskip("strauss")
 
-from phonon_sonification.phonon_dos_sonifier import PhononDOSSonifier
+from singingmaterials.phonon_dos_sonifier import PhononDOSSonifier
 
 from conftest import THZ
 
@@ -84,9 +84,15 @@ def test_choral_samples_read_from_environment(sonifier, tmp_path, monkeypatch):
         sonifier.sonify_site_choral("A_1")
 
 
+def test_choral_samples_unset_raises(sonifier, monkeypatch):
+    monkeypatch.delenv("PHONON_CHORAL_SAMPLES", raising=False)
+    with pytest.raises(FileNotFoundError, match="PHONON_CHORAL_SAMPLES"):
+        sonifier.sonify_site_choral("A_1")
+
+
 def test_sonifier_exported_from_package():
-    import phonon_sonification
-    assert phonon_sonification.PhononDOSSonifier is PhononDOSSonifier
+    import singingmaterials
+    assert singingmaterials.PhononDOSSonifier is PhononDOSSonifier
 
 
 def test_unknown_mode_raises(sonifier):

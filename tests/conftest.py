@@ -40,7 +40,7 @@ def raw_dos_dict():
 @pytest.fixture
 def patch_mp(monkeypatch):
     """Make dos_stats read the synthetic DOS instead of the Materials Project."""
-    from phonon_sonification import mp_interface
+    from singingmaterials import mp_interface
 
     raw = make_dos_dict()
     monkeypatch.setattr(mp_interface, "get_dos_raw_mp", lambda mp_id: copy.deepcopy(raw))

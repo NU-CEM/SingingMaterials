@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from scipy import constants
 
-from phonon_sonification import dos_stats
+from singingmaterials import dos_stats
 
 from conftest import SITE_PARAMS, THZ
 

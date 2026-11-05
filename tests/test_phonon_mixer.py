@@ -1,6 +1,6 @@
 import pytest
 
-from phonon_sonification import phonon_mixer
+from singingmaterials import phonon_mixer
 
 OUTPUTS = {"one": "one.wav", "two": "two.wav", "three": "three.wav"}
 JOB_ORDER = ["one", "two", "three"]

@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from phonon_sonification import mp_interface
+from singingmaterials import mp_interface
 
 
 def fake_mp_dos():
@@ -46,7 +46,7 @@ def test_dotenv_found_from_working_directory(tmp_path):
     # run as a script, as dotenv searches from the working directory anyway for `python -c`
     (tmp_path / ".env").write_text("MP_API_KEY=from_dotenv\n")
     (tmp_path / "script.py").write_text(
-        "import os\nfrom phonon_sonification import mp_interface\nprint(os.getenv('MP_API_KEY'))\n")
+        "import os\nfrom singingmaterials import mp_interface\nprint(os.getenv('MP_API_KEY'))\n")
     env = {k: v for k, v in os.environ.items() if k != "MP_API_KEY"}
     result = subprocess.run([sys.executable, "script.py"], cwd=tmp_path, env=env,
                             capture_output=True, text=True, check=True)
@@ -102,6 +102,6 @@ def test_missing_phonon_data_raises(monkeypatch):
         def get_phonon_dos_by_material_id(self, mp_id):
             raise RuntimeError("no phonon data")
 
-    monkeypatch.setattr(mp_interface, "MPRester", FailingRester)
+    monkeypatch.setattr(mp_interface, "_mp_rester", lambda: FailingRester("key"))
     with pytest.raises(ValueError, match="mp-test"):
         mp_interface.dos_data_from_mp_id("mp-test")
