@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=77"]  # first version to accept an SPDX license string
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SingingMaterials"
+dynamic = ["version"]
+description = "Sonification of first-principles phonon data using Strauss"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE.md"]
+authors = [{ name = "Lucy Whalley" }]
+keywords = ["sonification", "phonons", "density of states", "materials science", "strauss"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Multimedia :: Sound/Audio :: Sound Synthesis",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+sound = ["strauss", "pyyaml"]
+mp = ["mp-api"]
+phonopy = ["phonopy"]
+all = ["SingingMaterials[sound,mp,phonopy]"]
+test = ["pytest"]
+
+[project.scripts]
+phonon-sonify = "singingmaterials.cli:main"
+phonon-sonify-yaml = "singingmaterials.run_from_yaml:main"
+
+[project.urls]
+Repository = "https://github.com/NU-CEM/SingingMaterials"
+Issues = "https://github.com/NU-CEM/SingingMaterials/issues"
+Paper = "https://arxiv.org/abs/2603.29037"
+
+[tool.setuptools]
+packages = ["singingmaterials"]
+
+[tool.setuptools.dynamic]
+version = { attr = "singingmaterials.__version__" }
+
+[tool.setuptools.package-data]
+singingmaterials = ["spec_example.yml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
