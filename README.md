@@ -69,11 +69,8 @@ sonifier.sonify_all_sites(temperature=300, output_path="mp-3953.wav")
 ### Data and statistics only
 
 ```python
-from singingmaterials.dos_stats import (
-    dos_dict_to_dataframe,
-    dos_stats_analysis,
-    visualisation,
-)
+from singingmaterials import visualisation
+from singingmaterials.dos_stats import dos_dict_to_dataframe, dos_stats_analysis
 
 dos_dict = dos_stats_analysis(mp_id="mp-3953", temp=300)
 print(
