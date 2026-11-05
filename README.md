@@ -6,12 +6,12 @@ This repository holds the package only. For examples of how it has been used, in
 
 ## What is this?
 
-- The package focuses on phonon density of states (DOS) data, which is read in from the [Materials Project](https://next-gen.materialsproject.org/) or [phonondb](https://github.com/atztogo/phonondb/blob/main/mdr/phonondb/README.md) databases.
-- It calculates statistics for each site in a material, such as the phonon band centre, the inter-quartile range and the Shannon entropy, optionally weighted by temperature. This part of the package can be used without producing any sound.
+- The package currently focuses on phonon density of states (DOS) data, which is read in from the [Materials Project](https://next-gen.materialsproject.org/) or [phonondb](https://github.com/atztogo/phonondb/blob/main/mdr/phonondb/README.md) databases.
+- It calculates statistics for each site in a material, such as the phonon band centre and the Shannon entropy, optionally weighted by temperature. This part of the package can also be used without producing any sound.
 - Three sonification types are supported: spectral, synth and choral. These can be mixed together in different ways (superimpose, concatenate or a mixture of the two). Mixing is implemented through `ffmpeg`.
-- Users are encouraged to use `.yml` files rather than the command line interface to create and mix sonifications. The command line interface does not allow mixing.
-- The package is designed to be extendable, so that new types of phonon data, new data interfaces, and new sonifications can all be considered.
-- This package will eventually power a Singing Materials web app.
+- If you want to mix sonifications you must use `.yml` files rather than the command line interface. The command line interface does not allow mixing.
+- The package is designed to be extendable, so that new types of phonon data, new data interfaces, and new sonifications can be implemented in the future.
+- This package also powers the `AtomicStrudel` web app in-development [here](https://github.com/lucydot/AtomicStrudel).
 
 This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/NU-CEM/SingingMaterials/issues).
 
@@ -29,7 +29,7 @@ This installs everything. The package is then imported in Python as `singingmate
 | `mp` | read data from the Materials Project | [mp-api](https://docs.materialsproject.org/downloading-data/using-the-api/getting-started) |
 | `phonopy` | read phonondb files | [phonopy](https://phonopy.github.io/phonopy/) |
 
-For example, `pip install "SingingMaterials[mp]"` is enough to read Materials Project data and calculate statistics, without producing any sound. You need at least one of `mp` or `phonopy` to read in new data: with `pip install SingingMaterials` alone, only DOS data already cached in your working directory can be read. If you use a feature without its option installed, the error will say which one you need.
+For example, `pip install "SingingMaterials[mp]"` is enough to read Materials Project data and calculate statistics, without producing any sound. You need at least one of `mp` or `phonopy` to read in new data: with `pip install SingingMaterials` alone, only DOS data already cached in your working directory can be read. 
 
 To read data from the Materials Project, [generate an API key](https://next-gen.materialsproject.org/api) and store it as `MP_API_KEY` in a `.env` file in your working directory (or one of its parents), or set it as an environment variable.
 
@@ -70,7 +70,9 @@ sonifier.sonify_all_sites(temperature=300, output_path="mp-3953.wav")
 from singingmaterials.dos_stats import dos_dict_to_dataframe, dos_stats_analysis
 
 dos_dict = dos_stats_analysis(mp_id="mp-3953", temp=300)
-print(dos_dict["projection"]["total"]["stats"]["thermal"]["300"]["band_centre"])  # in Hz
+print(
+    dos_dict["projection"]["total"]["stats"]["thermal"]["300"]["band_centre"]
+)  # in Hz
 print(dos_dict_to_dataframe(dos_dict))
 ```
 
@@ -106,17 +108,7 @@ If you use this package please cite the following [pre-print](https://arxiv.org/
 
 Whalley, L., Shepherd, R., Boehringer, J., Knotts, S., Vickers, P., Caselton, G., Harrison, C., Hogg, B., Ratliff, D., Davenport, C., & Portas, A. (2026). *Singing Materials: Initial experiments in applying sonification to phonon spectra.* arXiv:2603.29037 [cond-mat.mtrl-sci]
 
-## Use of AI
+## AI usage statement
 
-From October 2026, AI was used to make changes to this repository. Commit `b11c2ef` ("Create LICENSE.md", 15 September 2026) is the last commit made before then. Every commit after it, starting with `6d034a0` ("Fix crashes and incorrect results in phonon_sonification"), was written using [Claude Code](https://claude.com/claude-code), an AI coding assistant, running Anthropic's Claude Opus 5.5 model. Most of these commits carry a `Co-Authored-By: Claude` line in their commit message, so they can be listed with `git log --grep="Co-Authored-By: Claude"`; those committed by the maintainer may not.
+The main functionality of SingingMaterials was implemented without AI. From October 2026, AI was used to make changes to this repository, including creating the test suite. Commit `b11c2ef` ("Create LICENSE.md", 15 September 2026) is the last commit made before using AI. Commits after this, starting with `6d034a0` ("Fix crashes and incorrect results in phonon_sonification"), may have been written using [Claude Code](https://claude.com/claude-code) with Opus 5.5. These commits carry a `Co-Authored-By: Claude` line in their commit message, so they can be listed with `git log --grep="Co-Authored-By: Claude"`.
 
-The repository maintainer asked for a review of the repository, chose which suggested changes to make, and directed the work. The AI assistant wrote the code, tests and text in these commits, including this statement. The changes were:
-
-- fixing bugs in the package, including a bug that misaligned phonon densities and frequencies when imaginary modes were removed, and an incorrect sign in the Shannon entropy;
-- packaging (`pyproject.toml`, command-line entry points), a `pytest` test suite and a GitHub Actions workflow;
-- removing unused code, caching Materials Project data as JSON rather than pickle, tidying the READMEs and adding `CITATION.cff`;
-- organising the `workshops` folder and correcting material IDs in the quartz, salt and graphite specs (these specs have since been removed from this repository);
-- preparing the package for release on PyPI, including a publishing workflow, finding `.env` files and choral samples when the package is installed outside a clone, and exporting `PhononDOSSonifier` from the package;
-- removing everything other than the package from this repository, following the move of the examples to [SingingMaterials_Dissemination](https://github.com/lucydot/SingingMaterials_Dissemination), making Strauss and mp-api optional dependencies, rewriting this README, and renaming the package from `phonon_sonification` to `SingingMaterials`.
-
-The test suite passes in CI on Python 3.11 to 3.13. Some changes have not been checked against real data: choral sonification is untested because its samples are not in the repository, the graphite site labels (`C_1`, `C_2`) are unverified, and cached DOS files made before the misalignment fix still need regenerating. Commit hashes above refer to the `fix/phonon-sonification-bugs` branch and may change if that branch is rebased or squashed when merged.
