@@ -8,7 +8,7 @@ This repository holds the package only. For examples of how it has been used, in
 
 ## What is this?
 
-- The package currently focuses on phonon density of states (DOS) data, which is read in from the [Materials Project](https://next-gen.materialsproject.org/) or [phonondb](https://github.com/atztogo/phonondb/blob/main/mdr/phonondb/README.md) databases.
+- The package currently focuses on the [sonification](#what-is-sonification) of phonon density of states (DOS) data, which is read in from the [Materials Project](https://next-gen.materialsproject.org/) or [phonondb](https://github.com/atztogo/phonondb/blob/main/mdr/phonondb/README.md) databases.
 - It calculates statistics for each site in a material, such as the phonon band centre and the Shannon entropy, optionally weighted by temperature. This part of the package can also be used without producing any sound.
 - Three sonification types are supported: spectral, synth and choral. These can be mixed together in different ways (superimpose, concatenate or a mixture of the two). Mixing is implemented through `ffmpeg`.
 - If you want to mix sonifications you must use `.yml` files rather than the command line interface. The command line interface does not allow mixing.
@@ -16,6 +16,12 @@ This repository holds the package only. For examples of how it has been used, in
 - This package also powers the `AtomicStrudel` web app in-development [here](https://github.com/lucydot/AtomicStrudel).
 
 This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/NU-CEM/SingingMaterials/issues).
+
+## What is Sonification?
+
+Sonification is the use of non-speech audio to convey information. A well-known scientific example is the geiger counter which produces an audible click when it detects an ionisation event. Sonification is being increasingly used within the physical sciences, in particular for [astrophysical research](https://www.scientificamerican.com/video/listen-to-the-astonishing-chirp-of-two-black-holes-merging). 
+Sonification has also been used as a tool for music composition by a [number of contemporary classical composers](https://www.straebel.com/files/Straebel%202010_Sonification%20Metaphor.pdf). 
+The continuum from data representation to data abstraction is briefly discussed in the paper [`Making data sing`](https://www.researchgate.net/profile/Atau-Tanaka/publication/312740596_Making_Data_Sing_Embodied_Approaches_to_Sonification/links/5fc6b5f2299bf188d4e8d59e/Making-Data-Sing-Embodied-Approaches-to-Sonification.pdf) (Parkinson and Tanaka, 2013).
 
 ## Installation
 
