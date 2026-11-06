@@ -4,7 +4,7 @@ title: "SingingMaterials"
 abstract: "SingingMaterials: a Python package for the sonification of first-principles phonon data."
 type: software
 license: MIT
-repository-code: "https://github.com/NU-CEM/SingingMaterials"
+repository-code: "https://github.com/lucydot/SingingMaterials"
 authors:
   - family-names: Whalley
     given-names: Lucy

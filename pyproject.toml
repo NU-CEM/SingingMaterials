@@ -43,8 +43,8 @@ phonon-sonify = "singingmaterials.cli:main"
 phonon-sonify-yaml = "singingmaterials.run_from_yaml:main"
 
 [project.urls]
-Repository = "https://github.com/NU-CEM/SingingMaterials"
-Issues = "https://github.com/NU-CEM/SingingMaterials/issues"
+Repository = "https://github.com/lucydot/SingingMaterials"
+Issues = "https://github.com/lucydot/SingingMaterials/issues"
 Paper = "https://arxiv.org/abs/2603.29037"
 
 [tool.setuptools]

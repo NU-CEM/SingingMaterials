@@ -13,7 +13,7 @@ This repository holds the package only. For examples of how it has been used, in
 - The package is designed to be extendable, so that new types of phonon data, new data interfaces, and new sonifications can be implemented in the future.
 - This package also powers the `AtomicStrudel` web app in-development [here](https://github.com/lucydot/AtomicStrudel).
 
-This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/NU-CEM/SingingMaterials/issues).
+This is alpha-release software: it has been tested, but there are likely still bugs - please use with caution! If you spot any issues please raise this on the [Issues page](https://github.com/lucydot/SingingMaterials/issues).
 
 ## Installation
 
@@ -54,7 +54,7 @@ phonon-sonify mp-3953 --site O_6 --mode synth --lfo
 phonon-sonify-yaml my_spec.yml                   # create and mix sonifications from a spec file
 ```
 
-See [`spec_example.yml`](https://github.com/NU-CEM/SingingMaterials/blob/main/singingmaterials/spec_example.yml) for the spec file format.
+See [`spec_example.yml`](https://github.com/lucydot/SingingMaterials/blob/main/singingmaterials/spec_example.yml) for the spec file format.
 
 From Python:
 
