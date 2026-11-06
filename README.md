@@ -1,6 +1,6 @@
 # Singing Materials
 
-`SingingMaterials` is a Python package which reads first-principles phonon data, analyses it, and uses [Strauss](https://www.audiouniverse.org/research/strauss) to turn it into sound; *to hear how materials sing*.
+`SingingMaterials` is a Python package which reads and analyses atomistic simulation data, and uses [Strauss](https://www.audiouniverse.org/research/strauss) to turn it into sound; *to hear how materials sing*.
 
 A description of this package has been published in the following [pre-print](https://arxiv.org/abs/2603.29037), and is accepted to the [ICAD proceedings](https://interactive-sonification.org/icad2026/). A `.bib` file is in the repo, and the plain-text citation is: Whalley, L., Shepherd, R., Boehringer, J., Knotts, S., Vickers, P., Caselton, G., Harrison, C., Hogg, B., Ratliff, D., Davenport, C., & Portas, A. (2026). *Singing Materials: Initial experiments in applying sonification to phonon spectra.* arXiv:2603.29037 [cond-mat.mtrl-sci]
 
